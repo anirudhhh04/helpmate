@@ -10,7 +10,7 @@ function WorkersList() {
   useEffect(() => {
         const fetchWorkers = async () => {
         try {
-             const response = await axios.get(`http://localhost:5000/api/workers/${location}/${service}`);
+             const response = await axios.get(`http://localhost:5000/api/workers?location=${location}&${service}`);
              setWorkers(response.data);
             } catch (error) {
              alert("No workers found for this service!");

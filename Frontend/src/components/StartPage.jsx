@@ -27,7 +27,12 @@ function StartPage(){
                 n("/selectpage"); 
             }
         };
-    
+        const nalogin=()=>{
+               n("/user/login");
+        }
+        const walogin=()=>{
+          n("/worker/login");
+   }
       return (
         <div>
     
@@ -36,6 +41,9 @@ function StartPage(){
             <input type="text"  placeholder="Enter Location"  value={location}  onChange={(e) => setLocation(e.target.value)}/>
             <button onClick={fetchServices}>🔍 Search</button>
           </div>
+          <button onClick={()=>nalogin()}> User Login</button>
+          <button onClick={()=>walogin()}> Worker Login</button>
+
           {services.length > 0 ? (
             services.map((worker) => (
               <div key={worker.wid} style={styles.workerCard}>

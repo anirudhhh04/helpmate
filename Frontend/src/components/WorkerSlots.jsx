@@ -64,6 +64,7 @@ function WorkerSlots() {
       {worker.imageUrl && <img src={worker.imageUrl} alt="Worker" style={{ width: "150px", height: "150px" }} />}
       <h3>{worker.name} - {worker.service}</h3>
       <p>Location: {worker.location}</p>
+      <p>Description : {worker.description} </p>
 
       <h2>Available Slots</h2>
       {Object.entries(slots).map(([time, available]) => {
