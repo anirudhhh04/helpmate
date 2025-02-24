@@ -17,6 +17,28 @@ function WorkerBookings() {
     };
     fetchBookings();
   }, [workerId]);
+  const handleSave = async (bookingId, slot) => {
+    try {
+      //confirm the Booking (Set status = true)
+      await axios.put(`http://localhost:5000/api/workers/bookings/${bookingId}/confirm`, { status: true });
+  
+      // update the worker's slots (Set slot availability to false)
+      await axios.put(`http://localhost:5000/api/workers/${workerId}/slots/update`, { slot, available: false });
+  
+      alert("Booking Confirmed!");
+  
+      //update the state to reflect changes immediately
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking.bid === bookingId ? { ...booking, status: true } : booking
+        )
+      );
+  
+    } catch (error) {
+      alert("Failed to confirm booking");
+    }
+  };
+  
   
   return (
     <div>
@@ -28,6 +50,8 @@ function WorkerBookings() {
               <h3>{booking.userId.name}</h3>
               <p><strong>Description:</strong> {booking.description}</p>
               <p><strong>Slot:</strong> {booking.slot}</p>
+              <button onClick={() => handleSave(booking.bid,booking.slot)}>{booking.status ? "Confirmed" : "Confirm"} </button>
+
             </li>
           ))}
         </ul>

@@ -43,12 +43,12 @@ const WorkerRegister = () => {
     <div>
       <h2>Worker Registration</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Name" required onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
-        <input type="text" name="service" placeholder="Service (e.g., Plumber, Electrician)" required onChange={handleChange} />
-        <input type="text" name="location" placeholder="Location" required onChange={handleChange} />
-        <input type="text" name="description" placeholder="Service Description" required onChange={handleChange} />
-        <input type="text" name="phone" placeholder="Phone Number" required onChange={handleChange} />
+        <input type="text" name="name" placeholder="Name" value={formData.name} required onChange={handleChange} />
+        <input type="password" name="password" placeholder="Password" value={formData.password} required onChange={handleChange} />
+        <input type="text" name="service" placeholder="Service (e.g., Plumber, Electrician)" value={formData.service} required onChange={handleChange} />
+        <input type="text" name="location" placeholder="Location"  value={formData.location} required onChange={handleChange} />
+        <input type="text" name="description" placeholder="Service Description" value={formData.description} required onChange={handleChange} />
+        <input type="text" name="phone" placeholder="Phone Number"  value={formData.phone} required onChange={handleChange} />
         <button type="submit">Register</button>
       </form>
     </div>
