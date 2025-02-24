@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
   const [location, setLocation] = useState("");
-  const [services, setServices] = useState([]);
-  const [user, setUser] = useState(null); 
-  const n= useNavigate();
+  const [services, setServices] = useState([]); // Store only available services
+  const [user, setUser] = useState(null);
+  const n = useNavigate();
   const profile = useRef(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token"); 
+        const token = localStorage.getItem("token");
         if (!token) return;
         const response = await axios.get("http://localhost:5000/api/user/profile", {
           headers: { Authorization: `Bearer ${token}` },
@@ -31,13 +32,14 @@ function UserDashboard() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:5000/api/workers?location=${location}`);
+      // Fetch unique services available in that location
+      const response = await axios.get(`http://localhost:5000/api/services?location=${location}`);
       setServices(response.data);
     } catch (error) {
       alert("Error fetching services");
-      
     }
   };
+
   const scrollToProfile = () => {
     profile.current.scrollIntoView({ behavior: "smooth" });
   };
@@ -48,20 +50,19 @@ function UserDashboard() {
 
       <h2>User Dashboard</h2>
       <div style={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Enter Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+        <input  type="text"  placeholder="Enter Location"  value={location}  onChange={(e) => setLocation(e.target.value)}
           style={styles.searchBar}
         />
         <button onClick={fetchServices} style={styles.searchButton}>🔍 Search</button>
       </div>
+
       {services.length > 0 ? (
-        services.map((worker) => (
-          <div key={worker.wid} style={styles.workerCard}>
-            <p><strong>{worker.service}</strong> - {worker.name}</p>
-            <button onClick={() => n(`/user/book/${worker.wid}`)} style={styles.bookButton}>Book Now</button>
+        services.map((service, index) => (
+          <div key={index} style={styles.serviceCard}>
+            <p><strong>{service}</strong></p>
+            <button onClick={() => n(`/services?location=${location}&service=${service}`)} style={styles.bookButton}>
+              View Available Workers
+            </button>
           </div>
         ))
       ) : (
@@ -70,7 +71,7 @@ function UserDashboard() {
 
       <div ref={profile} style={styles.profileSection}>
         <h3>User Profile</h3>
-        {user ? ( <p><strong>Name:</strong> {user.name}</p>) : (<p>Loading user details...</p> )}
+        {user ? (<p><strong>Name:</strong> {user.name}</p>) : (<p>Loading user details...</p>)}
       </div>
     </div>
   );
@@ -116,7 +117,7 @@ const styles = {
     border: "none",
     borderRadius: "5px",
   },
-  workerCard: {
+  serviceCard: {
     border: "1px solid #ccc",
     borderRadius: "10px",
     padding: "15px",

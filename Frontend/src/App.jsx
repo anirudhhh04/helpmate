@@ -6,7 +6,7 @@ import RegisterUser from "./components/RegisterUser.jsx";
 import RegisterWorker from "./components/RegisterWorker.jsx";
 import WorkerDashboard from "./components/WorkerDashboard.jsx";
 import UserDashboard from "./components/UserDashboard.jsx";
-import ServiceList from "./components/ServiceList.jsx";
+import WorkersList from "./components/WorkersList.jsx";
 import WorkerSlots from "./components/WorkerSlots.jsx";
 import WorkerBookings from "./components/WorkerBookings.jsx";
 import StartPage from "./components/StartPage.jsx";
@@ -22,7 +22,7 @@ function App() {
         <Route path="/worker/register" element={<RegisterWorker />} />
         <Route path="/worker/dashboard" element={<WorkerDashboard />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
-        <Route path="/services/:location/:service" element={<ServiceList />} />
+        <Route path="/services/:location/:service" element={<WorkersList />} />
         <Route path="/worker/:workerId/slots" element={<WorkerSlots />} />
         <Route path="/worker/bookings" element={<WorkerBookings/>}/>
       </Routes>

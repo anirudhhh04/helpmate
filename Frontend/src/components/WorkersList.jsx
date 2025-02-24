@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
-function ServiceList() {
+function WorkersList() {
   const { location, service } = useParams();
   const [workers, setWorkers] = useState([]);
   const n = useNavigate();
@@ -35,4 +35,4 @@ function ServiceList() {
   );
 }
 
-export default ServiceList;
+export default WorkersList;
