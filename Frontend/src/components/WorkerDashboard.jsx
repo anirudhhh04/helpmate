@@ -1,0 +1,113 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+function WorkerDashboard() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [slots, setSlots] = useState({
+    "9-10": false,
+    "10-11": false,
+    "11-12": false,
+    "12-1": false,
+    "1-2": false,
+    "2-3": false,
+    "3-4": false,
+  });
+
+  const [workerId, setWorkerId] = useState("worker_id_placeholder"); // Replace with real ID
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const n = useNavigate();
+
+  useEffect(() => {
+    const fetchWorkerData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/workers/${workerId}`);
+        setImageUrl(response.data.imageUrl);
+      } catch (error) {
+        console.error("Error fetching worker data");
+      }
+    };
+    fetchWorkerData();
+  }, [workerId]);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleSlotToggle = (slot) => {
+    setSlots((prevSlots) => ({
+      ...prevSlots,
+      [slot]: !prevSlots[slot],
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const date = selectedDate.toISOString().split("T")[0];
+      await axios.post("http://localhost:5000/api/workers/slots", { workerId, date, slots });
+      alert("Slots updated!");
+    } catch (err) {
+      alert("Error updating slots");
+    }
+  };
+
+  const handleViewBookings = () => {
+    n("/worker/bookings");
+  };
+
+  // Upload worker profile photo
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    const f = new FormData();
+    f.append("image", image);
+
+    try {
+      const response = await axios.post(`http://localhost:5000/api/workers/upload-profile/${workerId}`, f);
+      setImageUrl(response.data.imageUrl);
+      alert("Profile photo updated!");
+    } catch (error) {
+      alert("Error uploading image");
+    }
+  };
+
+  return (
+    <div>
+      <h2>Worker Dashboard</h2>
+
+      <div>
+        <h3>Profile Photo</h3>
+        {imageUrl && <img src={imageUrl} alt="Worker Profile" style={{ width: "150px", height: "150px" }} />}
+        <form onSubmit={handleImageUpload}>
+          <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+          <button type="submit">Upload</button>
+        </form>
+      </div>
+
+      <div>
+        <h3>Select a Date</h3>
+        <DatePicker selected={selectedDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" />
+      </div>
+
+      <div>
+        <h3>Available Slots for {selectedDate.toLocaleDateString()}</h3>
+        {Object.keys(slots).map((slot) => (
+          <button
+            key={slot}
+            onClick={() => handleSlotToggle(slot)}
+            style={{ backgroundColor: slots[slot] ? "green" : "gray" }}
+          >
+            {slot}
+          </button>
+        ))}
+      </div>
+
+      <button onClick={handleSubmit}>Save Slots</button>
+      <button onClick={handleViewBookings}>View Bookings</button>
+    </div>
+  );
+}
+
+export default WorkerDashboard;
