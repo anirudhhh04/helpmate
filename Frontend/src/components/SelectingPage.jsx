@@ -4,8 +4,8 @@ function SelectingPage() {
   return (
     <div>
       <h2>Select User Type</h2>
-      <Link to="/user/login"><button>USER</button></Link>
-      <Link to="/worker/login"><button>WORKER</button></Link>
+      <Link to="/user/register"><button>USER</button></Link>
+      <Link to="/worker/register"><button>WORKER</button></Link>
     </div>
   );
 }

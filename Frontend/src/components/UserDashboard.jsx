@@ -4,17 +4,18 @@ import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
   const [location, setLocation] = useState("");
-  const [services, setServices] = useState([]); // Store only available services
+  const [services, setServices] = useState([]);
   const [user, setUser] = useState(null);
   const n = useNavigate();
   const profile = useRef(null);
 
+  
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-        const response = await axios.get("http://localhost:5000/api/user/profile", {
+        const response = await axios.get("http://localhost:4000/api/user/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -33,7 +34,7 @@ function UserDashboard() {
     }
     try {
       // Fetch unique services available in that location
-      const response = await axios.get(`http://localhost:5000/api/services?location=${location}`);
+      const response = await axios.get(`http://localhost:4000/api/services?location=${location}`);
       setServices(response.data);
     } catch (error) {
       alert("Error fetching services");
