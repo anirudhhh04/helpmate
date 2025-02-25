@@ -145,10 +145,12 @@ body {
 }
 /*User Dashboard */
 .dashboard-container {
-  width: 100%;
+ 
   min-height: 100vh;
+  min-width: 100vh;
   padding: 20px;
   background-color: #f8f9fa;
+  flex: 1;
 }
 
 .profile-button {
