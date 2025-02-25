@@ -1,7 +1,7 @@
 
 body {
   font-family: "Arial", sans-serif;
-  background-color: #f4f4f9;
+  background-color: hsl(240, 30%, 95%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -231,14 +231,13 @@ body {
   transform: scale(1.02);
 }
 
-/* Service Name */
+
 .service-name {
   font-size: 18px;
   font-weight: bold;
   color: #333;
 }
 
-/* View Workers Button */
 .view-workers-button {
   background-color: #17a2b8;
   color: white;
@@ -261,15 +260,21 @@ body {
   color: #666;
   margin-top: 20px;
 }
+/*worker-dahsboard*/
 .profile-container {
-  margin-top: 40px;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-container img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007bff;
+  padding: 3px;
 }
 
 .profile-title {
@@ -280,11 +285,130 @@ body {
 
 .profile-info {
   font-size: 18px;
-  color: #555;
+  color: #7f1c1c;
 }
 
 .loading-text {
   font-size: 16px;
   color: #777;
   text-align: center;
+}
+.worker-dashboard {
+  max-width: 600px;
+  width: 90%;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-container img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007bff;
+  padding: 3px;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.upload-form input {
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.upload-form button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.upload-form button:hover {
+  background: #0056b3;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+  justify-content: center;
+}
+
+.slot-button {
+  background: #ccc;
+  color: rgb(23, 19, 19);
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.slot-button.active {
+  background: #28a745;
+}
+
+.slot-button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.action-buttons button {
+  flex: 1;
+  margin: 5px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 14px;
+}
+
+.action-buttons button:hover {
+  background: #0056b3;
+}
+
+@media (max-width: 500px) {
+  .slot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .worker-dashboard {
+    padding: 20px;
+  }
 }

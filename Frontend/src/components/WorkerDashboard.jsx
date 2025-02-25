@@ -6,21 +6,11 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function WorkerDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [slots, setSlots] = useState({
-    "9-10": false,
-    "10-11": false,
-    "11-12": false,
-    "12-1": false,
-    "1-2": false,
-    "2-3": false,
-    "3-4": false,
-  });
-
-  const [workerId, setWorkerId] = useState("worker_id_placeholder"); // Replace with real ID
+  const [slots, setSlots] = useState({ "9-10": false, "10-11": false, "11-12": false,  "12-1": false,  "1-2": false, "2-3": false,"3-4": false ,"4-5": false});
+  const [workerId, setWorkerId] = useState("worker_id_placeholder"); 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const n = useNavigate();
-
   useEffect(() => {
     const fetchWorkerData = async () => {
       try {
@@ -32,18 +22,15 @@ function WorkerDashboard() {
     };
     fetchWorkerData();
   }, [workerId]);
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
   const handleSlotToggle = (slot) => {
     setSlots((prevSlots) => ({
       ...prevSlots,
       [slot]: !prevSlots[slot],
     }));
   };
-
   const handleSubmit = async () => {
     try {
       const date = selectedDate.toISOString().split("T")[0];
@@ -74,13 +61,13 @@ function WorkerDashboard() {
   };
 
   return (
-    <div>
+    <div className="worker-dashboard">
       <h2>Worker Dashboard</h2>
 
-      <div>
+      <div className="profile-container">
         <h3>Profile Photo</h3>
         {imageUrl && <img src={imageUrl} alt="Worker Profile" style={{ width: "150px", height: "150px" }} />}
-        <form onSubmit={handleImageUpload}>
+        <form className="upload-form" onSubmit={handleImageUpload}>
           <input type="file" onChange={(e) => setImage(e.target.files[0])} />
           <button type="submit">Upload</button>
         </form>
@@ -93,19 +80,22 @@ function WorkerDashboard() {
 
       <div>
         <h3>Available Slots for {selectedDate.toLocaleDateString()}</h3>
+        <div className="slot-grid">
         {Object.keys(slots).map((slot) => (
           <button
             key={slot}
             onClick={() => handleSlotToggle(slot)}
-            style={{ backgroundColor: slots[slot] ? "green" : "gray" }}
+            className={`slot-button ${slots[slot] ? "active" : ""}`}
           >
             {slot}
           </button>
         ))}
+        </div>
       </div>
-
-      <button onClick={handleSubmit}>Save Slots</button>
-      <button onClick={handleViewBookings}>View Bookings</button>
+      <div className="action-buttons">
+        <button onClick={handleSubmit}>Save Slots</button>
+        <button onClick={handleViewBookings}>View Bookings</button>
+      </div>
     </div>
   );
 }
