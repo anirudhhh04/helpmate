@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom";
-//for selecting user or worker
 function SelectingPage() {
   return (
-    <div>
-      <h2>Select User Type</h2>
-      <Link to="/user/register"><button>USER</button></Link>
-      <Link to="/worker/register"><button>WORKER</button></Link>
+  <div className="select">
+    <div className="select-container">
+      <h2 className="select-title">Select User Type</h2>
+      <div className="select-buttons">
+        <Link to="/user/register">
+          <button className="select-button user-button">USER</button>
+        </Link>
+        <Link to="/worker/register">
+          <button className="select-button worker-button">WORKER</button>
+        </Link>
+      </div>
     </div>
+  </div>
   );
 }
 

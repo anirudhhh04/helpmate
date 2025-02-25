@@ -24,11 +24,11 @@ function WorkerLogin() {
   };
 
   return (
-    <div>
-      <h2>Worker Login</h2>
-      <input type="email" placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+    <div className="register-container">
+      <h2 className="register-title">Worker Login</h2>
+      <input className="register-input" type="email" placeholder="email" onChange={(e) => setEmail(e.target.value)} />
+      <input className="register-input" type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+      <button className="register-button" onClick={handleLogin}>Login</button>
     </div>
   );
 }

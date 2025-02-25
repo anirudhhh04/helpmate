@@ -11,8 +11,7 @@ function RegisterUser() {
 
   const handleRegister = async () => {
     try {
-      const response=await axios.post("http://localhost:4000/api/user/register", { username,email, password });
-     
+      await axios.post("http://localhost:4000/api/user/register", { username, email, password });
       n("/user/login");
     } catch (err) {
       alert("Registration failed!");
@@ -20,13 +19,35 @@ function RegisterUser() {
   };
 
   return (
-    <div>
-      <h2>Register as a User</h2>
-      <input type="text" placeholder="username" onChange={(e) => setUsername(e.target.value)} />
-      <input type="email" placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleRegister}>Register</button>
-      <p> Already Registered? <Link style={{color:"blue"}} to="/user/login">Login</Link></p>
+    <div className="register-container">
+      <h2 className="register-title">Register as a User</h2>
+      <input
+        type="text"
+        placeholder="Username"
+        onChange={(e) => setUsername(e.target.value)}
+        className="register-input"
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        onChange={(e) => setEmail(e.target.value)}
+        className="register-input"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+        className="register-input"
+      />
+      <button onClick={handleRegister} className="register-button">
+        Register
+      </button>
+      <p className="register-text">
+        Already Registered?{" "}
+        <Link className="register-link" to="/user/login">
+          Login
+        </Link>
+      </p>
     </div>
   );
 }
