@@ -32,7 +32,7 @@ function UserDashboard() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:4000/api/services?location=${location}`);
+      const response = await axios.get(`http://localhost:4000/api/worker/services/${location}`);
       setServices(response.data);
     } catch (error) {
       alert("Error fetching services");
@@ -55,6 +55,11 @@ function UserDashboard() {
           placeholder="Enter Location" 
           value={location} 
           onChange={(e) => setLocation(e.target.value)} 
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              fetchServices(); 
+            }
+          }}
           className="search-input"
         />
         <button onClick={fetchServices} className="search-button">🔍 Search</button>
@@ -65,7 +70,7 @@ function UserDashboard() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <p><strong>{service}</strong></p>
-              <button onClick={() => navigate(`/services?location=${location}&service=${service}`)} className="view-workers-button">
+              <button onClick={() => navigate(`/services/${location}/${service}`)} className="view-workers-button">
                 View Available Workers
               </button>
             </div>

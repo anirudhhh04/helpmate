@@ -10,7 +10,7 @@ function WorkersList() {
   useEffect(() => {
         const fetchWorkers = async () => {
         try {
-             const response = await axios.get(`http://localhost:5000/api/workers?location=${location}&${service}`);
+             const response = await axios.get(`http://localhost:4000/api/worker/${location}/${service}`);
              setWorkers(response.data);
             } catch (error) {
              alert("No workers found for this service!");
@@ -23,11 +23,11 @@ function WorkersList() {
   return (
     <div>
       <h2>Workers Offering {service} in {location}</h2>
-      {workers.map((worker) => (
-        <div key={worker.wid}>
-          <h3>{worker.name}</h3>
+      {workers.map((worker,index) => (
+        <div key={index}>
+          <h3>{worker.username}</h3>
           <p>{worker.description}</p>
-          <p>📞 Contact: {worker.phone}</p>
+          <p>📞 Contact: {worker.contactNumber}</p>
           <button onClick={() => navigate(`/worker/${worker.wid}/slots`)}>View Available Slots</button>
         </div>
       ))}
