@@ -1,5 +1,8 @@
 const express=require("express");
+const mongoose = require('mongoose');
 const Worker=require('../models/Worker');
+const Slot=require("../models/Slot");
+const Convertslot=require("../controller/Convertslot");
 const router=express.Router();
 
 router.post('/register',async (req,res)=>{
@@ -10,7 +13,7 @@ router.post('/register',async (req,res)=>{
    const worker =await Worker.create({username,email,password,location:location.toLowerCase(),contactNumber:phone,service,description});
     return res.status(200).json({ message: "worker created successfully",success:true});
 }catch(err){
-    console.log(err.message);
+   
     return res.status(500).json({message:err.message});
 }
 });
@@ -31,7 +34,7 @@ router.post('/login',async (req,res)=>{
 }
 });
 
-router.post('/:id',async (req,res)=>{
+router.get('/:id',async (req,res)=>{
     try {
         
         const worker = await Worker.findById(req.params.id);
@@ -78,6 +81,41 @@ router.get('/:location/:service',async (req,res)=>{
   }
 
 
+});
+router.post("/slots",async (req,res)=>{
+  try {
+    const { workerId, date, slots } = req.body;
+
+    // Validate workerId
+    if (!mongoose.Types.ObjectId.isValid(workerId)) {
+      return res.status(400).json({ message: "Invalid Worker ID" });
+    }
+
+    const formattedslot = Convertslot(slots);
+    
+
+    // Find the slot document
+    let slotDocument = await Slot.findOne({ wid: workerId, date });
+
+    if (slotDocument) {
+      // Update existing slot document
+      slotDocument.slots = formattedslot;
+      await slotDocument.save();
+      return res.status(200).json({ message: "Slots updated successfully!", slotDocument });
+    } else {
+      // Create new slot document
+      const newSlot = await Slot.create({
+        wid: workerId,
+        date,
+        slots: formattedslot
+      });
+      return res.status(201).json({ message: "Slots created successfully!", newSlot });
+    }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
 });
 
 module.exports=router;

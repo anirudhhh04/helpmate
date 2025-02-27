@@ -8,21 +8,26 @@ const slotSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
   slots: [
     {
-      start: String, 
-      end: String,   
-      isBooked: {
+      startHour: {
+        type: Number,
+        required: true,
+      },
+      endHour: {
+        type: Number,
+        required: true,
+      },
+      available: {
         type: Boolean,
-        default: false,
+        default:true,
       },
     },
   ],
- 
-  },{
+},{
     timestamps:true,
   }
  
