@@ -5,32 +5,55 @@ import { useParams, useNavigate } from "react-router-dom";
 function WorkersList() {
   const { location, service } = useParams();
   const [workers, setWorkers] = useState([]);
-  const n = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-        const fetchWorkers = async () => {
-        try {
-             const response = await axios.get(`http://localhost:4000/api/worker/${location}/${service}`);
-             setWorkers(response.data);
-            } catch (error) {
-             alert("No workers found for this service!");
-            }
-        };
-        if (location && service) {
-            fetchWorkers();
-        }
-        }, [location, service]);
+    const fetchWorkers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/worker/${location}/${service}`
+        );
+        setWorkers(response.data);
+      } catch (error) {
+        alert("No workers found for this service!");
+      }
+    };
+
+    if (location && service) {
+      fetchWorkers();
+    }
+  }, [location, service]);
+
   return (
-    <div>
-      <h2>Workers Offering {service} in {location}</h2>
-      {workers.map((worker,index) => (
-        <div key={index}>
-          <h3>{worker.username}</h3>
-          <p>{worker.description}</p>
-          <p>📞 Contact: {worker.contactNumber}</p>
-          <button onClick={() => navigate(`/worker/${worker.wid}/slots`)}>View Available Slots</button>
+    <div className="container">
+      <h2 className="title">
+        Workers Offering {service} in {location}
+      </h2>
+
+      {workers.length === 0 ? (
+        <p className="no-workers">No workers found.</p>
+      ) : (
+        <div className="workers-grid">
+          {workers.map((worker, index) => (
+            <div
+              key={index}
+              className="worker-card"
+              onClick={() => navigate(`/worker/${worker.wid}/slots`)}
+            >
+              <div className="worker-info">
+                <div className="worker-text">
+                  <h3>{worker.username}</h3>
+                  <p className="description">{worker.description}</p>
+                  <p className="contact">📞 {worker.contactNumber}</p>
+                </div>
+                <div className="worker-photo">
+                  <img src={worker.profileUrl} alt={worker.username} />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

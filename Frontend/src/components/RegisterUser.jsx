@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa"; // Import icons
 
 function RegisterUser() {
   const [username, setUsername] = useState("");
@@ -21,27 +22,38 @@ function RegisterUser() {
   return (
     <div className="register-container">
       <h2 className="register-title">Register as a User</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        onChange={(e) => setUsername(e.target.value)}
-        className="register-input"
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-        className="register-input"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-        className="register-input"
-      />
+      <div className="input-container">
+        <FaUser className="input-icon" />
+        <input
+          type="text"
+          placeholder="Username"
+          onChange={(e) => setUsername(e.target.value)}
+          className="register-input"
+        />
+      </div>
+      <div className="input-container">
+        <FaEnvelope className="input-icon" />
+        <input
+          type="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          className="register-input"
+        />
+      </div>
+      <div className="input-container">
+        <FaLock className="input-icon" />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+          className="register-input"
+        />
+      </div>
+
       <button onClick={handleRegister} className="register-button">
         Register
       </button>
+
       <p className="register-text">
         Already Registered?{" "}
         <Link className="register-link" to="/user/login">

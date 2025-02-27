@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 
 function WorkerLogin() {
   const [email, setEmail] = useState("");
@@ -24,13 +25,31 @@ function WorkerLogin() {
   };
 
   return (
-    <div className="register-container">
-      <h2 className="register-title">Worker Login</h2>
-      <input className="register-input" type="email"  placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-      <input className="register-input" type="password"  placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <button className="register-button" onClick={handleLogin}>Login</button>
-    </div>
-  );
+        <div className="register-container">
+          <h2 className="register-title">Worker Login</h2>
+    
+          <div className="input-group">
+            <FaEnvelope className="input-icon" />
+            <input
+              className="register-input"
+              type="email"
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="input-group">
+            <FaLock className="input-icon" />
+            <input
+              className="register-input"
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+    
+          <button className="register-button" onClick={handleLogin}>Login</button>
+        </div>
+      );
 }
 
 export default WorkerLogin;
