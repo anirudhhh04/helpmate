@@ -9,28 +9,30 @@ import "react-datepicker/dist/react-datepicker.css";
 function WorkerDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState({ "9-10": false, "10-11": false, "11-12": false,  "12-1": false,  "1-2": false, "2-3": false,"3-4": false ,"4-5": false});
-  const [workerId, setWorkerId] = useState("worker_id_placeholder"); 
+  const [workerId, setWorkerId] = useState(" "); 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const n = useNavigate();
   useEffect(() => {
+    const token = localStorage.getItem('workerToken');
+    if (token) {
+      const decoded = jwt_decode(token);
+      setWorkerId(decoded._id);
+    }
+  }, []); 
+  
+  useEffect(() => {
     const fetchWorkerData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          
-          const decoded = jwt_decode(token);
-          setWorkerId(decoded._id);
-          
+        if (workerId) { // ✅ Only fetch if workerId is set
+          const response = await axios.get(`http://localhost:4000/api/worker/${workerId}`);
+          const workerData = response.data;
+          if (workerData.imageurl) {
+            setImageUrl(workerData.imageurl);
+          } else {
+            setImageUrl("http://localhost:4000/images/profilelogo.png");
+          }
         }
-      const response = await axios.get(`http://localhost:4000/api/worker/${workerId}`);
-      const workerData = response.data;
-      if (workerData.imageurl ) {
-        setImageUrl(workerData.imageurl);
-      } else {
-        // Use default image
-        setImageUrl("http://localhost:4000/images/profilelogo.png");
-      }
       } catch (error) {
         console.error("Error fetching worker data");
       }
@@ -49,8 +51,9 @@ function WorkerDashboard() {
   const handleSubmit = async () => {
     try {
       const date = selectedDate.toISOString().split("T")[0];
-      await axios.post("http://localhost:4000/api/worker/slots", { workerId, date, slots,imageUrl });
-      alert("Slots updated!");
+
+      const response=await axios.post("http://localhost:4000/api/worker/slots", { workerId, date, slots });
+      alert(response.data.message);
     } catch (err) {
       alert("Error updating slots");
     }
@@ -68,7 +71,7 @@ function WorkerDashboard() {
 
     try {
       const response = await axios.post('http://localhost:4000/upload', f);
-      console.log(response);
+      
       setImageUrl(response.data.imageurl);
       alert("Profile photo updated!");
     } catch (error) {
