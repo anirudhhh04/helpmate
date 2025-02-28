@@ -5,6 +5,33 @@ const Slot=require("../models/Slot");
 const Convertslot=require("../controller/Convertslot");
 const router=express.Router();
 
+
+router.get("/slots/:id",async (req,res)=>{
+  const id=req.params.id;
+  
+  try{
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ message: "Invalid Slot ID" });
+  }
+
+  // Find slot by id and select only the 'slots' field
+  const slot = await Slot.findOne({wid: id}).select("slots");
+  console.log(slot);
+  // If no slot found
+  if (!slot) {
+    return res.status(404).json({ message: "Slot not found" });
+  }
+
+  // If slot found, return only the slots field
+  return res.status(200).json({slots:slot.slots});
+
+} catch(error) {
+  console.error(error);
+  return res.status(500).json({ message: "Server error", error: error.message });
+}
+}
+  );
+
 router.post('/register',async (req,res)=>{
     try{
     const workerexisting=await  Worker.findOne({email:req.body.email});
@@ -36,8 +63,11 @@ router.post('/login',async (req,res)=>{
 
 router.get('/:id',async (req,res)=>{
     try {
+
+      console.log(req.params.id)
         
         const worker = await Worker.findById(req.params.id);
+        console.log(worker)
         if (!worker) {
           return res.status(404).json({ message: "Worker not found" });
         }
@@ -117,5 +147,7 @@ router.post("/slots",async (req,res)=>{
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+
 
 module.exports=router;

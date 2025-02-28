@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 function WorkerSlots() {
   const { wid } = useParams(); // Fetch worker ID from URL
-  const [slots, setSlots] = useState({});
+  const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [description, setDescription] = useState("");
   const [worker, setWorker] = useState({});
@@ -14,17 +14,18 @@ function WorkerSlots() {
     const fetchWorkerData = async () => {
       try {
         //fetch worker details
-        const workerResponse = await axios.get(`http://localhost:5000/api/workers/${wid}`);
+        const workerResponse = await axios.get(`http://localhost:4000/api/worker/${wid}`);
         setWorker(workerResponse.data);
 
         //fetch available slots
-        const slotsResponse = await axios.get(`http://localhost:5000/api/workers/${wid}/slots`);
-        setSlots(slotsResponse.data);
+        const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}`);
+        setSlots(slotsResponse.data.slots);
+        console.log(slots);
 
         //fetch user's bookings for this worker
         const userId = window.localStorage.getItem("userId");
         if (userId) {
-          const bookingsResponse = await axios.get(`http://localhost:5000/api/users/${userId}/bookings`);
+          const bookingsResponse = await axios.get(`http://localhost:4000/api/users/${userId}/bookings`);
           setBookings(bookingsResponse.data);
         }
       } catch (error) {
@@ -42,7 +43,7 @@ function WorkerSlots() {
         return;
       }
 
-      await axios.post("http://localhost:5000/api/users/book", {
+      await axios.post("http://localhost:4000/api/users/book", {
         wid,
         slot: selectedSlot,
         userId,
@@ -51,7 +52,7 @@ function WorkerSlots() {
       });
 
       alert("Booking Confirmed!");
-      const updatedBookings = await axios.get(`http://localhost:5000/api/users/${userId}/bookings`);
+      const updatedBookings = await axios.get(`http://localhost:4000/api/users/${userId}/bookings`);
       setBookings(updatedBookings.data);
     } catch (error) {
       alert("Failed to book a slot.");
@@ -62,23 +63,27 @@ function WorkerSlots() {
     <div>
       <h2>Worker Profile</h2>
       {worker.imageUrl && <img src={worker.imageUrl} alt="Worker" style={{ width: "150px", height: "150px" }} />}
-      <h3>{worker.name} - {worker.service}</h3>
+      <h3>{worker.username} - {worker.service}</h3>
       <p>Location: {worker.location}</p>
       <p>Description : {worker.description} </p>
 
       <h2>Available Slots</h2>
-      {Object.entries(slots).map(([time, available]) => {
-        const con = bookings.find((b) => b.slot === time); // for checking confirmation
-        return (
-          <button 
-            key={time} 
-            onClick={() => setSelectedSlot(time)} 
-            disabled={!available} 
-            style={{ backgroundColor: selectedSlot === time ? "green" : "" }} >
-            {time} {available ? "(Available)" : ""} {con && ` - ${con.status ? "Confirmed ✅" : "Pending ⏳"}`}
-          </button>
-        );
-      })}
+      {Array.isArray(slots) && slots.length === 0 && <p>No slots available for today.</p>}
+      {Array.isArray(slots) && slots.length > 0 && slots.map((slot, index) => {
+      const time = `${slot.startHour}-${slot.endHour}`;
+      const available = slot.available;
+      const con = bookings.find((b) => b.slot.startHour === slot.startHour && b.slot.endHour === slot.endHour); // for checking confirmation
+  return (
+    <button 
+      key={index} 
+      onClick={() => setSelectedSlot(time)} 
+      disabled={!available} 
+      style={{ backgroundColor: selectedSlot === time ? "green" : "" }}
+    >
+      {time} {available ? "(Available)" : ""} {con && ` - ${con.status ? "Confirmed ✅" : "Pending ⏳"}`}
+    </button>
+  );
+})}
 
       <h3>Provide a Description</h3>
       <textarea 

@@ -38,7 +38,7 @@ function WorkersList() {
             <div
               key={index}
               className="worker-card"
-              onClick={() => navigate(`/worker/${worker.wid}/slots`)}
+              onClick={() => navigate(`/worker/slots/${worker._id.toString()}`)}
             >
               <div className="worker-info">
                 <div className="worker-text">

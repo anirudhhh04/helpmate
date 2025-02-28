@@ -41,7 +41,6 @@ location:{
   },
  imageurl:{
   type:String,
-  default: '/images/profilelogo.png',
  },
  
   description:{

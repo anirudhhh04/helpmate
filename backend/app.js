@@ -14,8 +14,9 @@ const port=4000;
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.static(path.resolve("./public")));
-app.use('/images', express.static(path.resolve(__dirname, 'public/images')));
-app.use('/uploads', express.static(path.resolve(__dirname, 'public/uploads')));
+app.use('/images', express.static(path.resolve(__dirname, 'src/public/images')));
+console.log(__dirname)
+app.use('/uploads', express.static(path.resolve(__dirname, 'src/public/uploads')));
 
 
 
@@ -29,7 +30,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mini').then(()=> {
     console.log("mongo connected")});
 
     const storage = multer.diskStorage({
-        destination: path.resolve(__dirname, 'public/uploads'),  // Folder to store images
+        destination: path.resolve(__dirname, 'src/public/uploads'),  // Folder to store images
         filename: (req, file, cb) => {
          return cb(null, `${Date.now()}${file.originalname}`); // File naming convention
         },

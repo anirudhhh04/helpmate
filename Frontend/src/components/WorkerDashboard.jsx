@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 function WorkerDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState({ "9-10": false, "10-11": false, "11-12": false,  "12-1": false,  "1-2": false, "2-3": false,"3-4": false ,"4-5": false});
-  const [workerId, setWorkerId] = useState(" "); 
+  const [workerId, setWorkerId] = useState(""); 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const n = useNavigate();
@@ -17,18 +17,22 @@ function WorkerDashboard() {
     const token = localStorage.getItem('workerToken');
     if (token) {
       const decoded = jwt_decode(token);
+      console.log(decoded)
       setWorkerId(decoded._id);
     }
   }, []); 
   
   useEffect(() => {
+
+    if (!workerId) return;
     const fetchWorkerData = async () => {
       try {
         if (workerId) { // ✅ Only fetch if workerId is set
+          console.log(workerId, "FROM WORKER")
           const response = await axios.get(`http://localhost:4000/api/worker/${workerId}`);
           const workerData = response.data;
           if (workerData.imageurl) {
-            setImageUrl(workerData.imageurl);
+            setImageUrl("http://localhost:4000"+workerData.imageurl);
           } else {
             setImageUrl("http://localhost:4000/images/profilelogo.png");
           }
@@ -79,6 +83,7 @@ function WorkerDashboard() {
     }
   };
 
+  console.log(imageUrl)
   return (
     <div className="worker-dashboard">
       <h2>Worker Dashboard</h2>
