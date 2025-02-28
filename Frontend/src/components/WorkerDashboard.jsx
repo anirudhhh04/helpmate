@@ -29,7 +29,7 @@ function WorkerDashboard() {
       try {
         if (workerId) { // ✅ Only fetch if workerId is set
           console.log(workerId, "FROM WORKER")
-          const response = await axios.get(`http://localhost:4000/api/worker/${workerId}`);
+          const response = await axios.get(`http://localhost:4000/api/worker/get/${workerId}`);
           const workerData = response.data;
           if (workerData.imageurl) {
             setImageUrl("http://localhost:4000"+workerData.imageurl);

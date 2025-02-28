@@ -173,7 +173,7 @@ body {
 /*User Dashboard */
 .dashboard-container {
  
-  min-height: 100vh;
+  min-height: 98vh;
   min-width: 100vh;
   padding: 20px;
   background-color: #f8f9fa;

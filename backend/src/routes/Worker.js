@@ -61,7 +61,7 @@ router.post('/login',async (req,res)=>{
 }
 });
 
-router.get('/:id',async (req,res)=>{
+router.get('/get/:id',async (req,res)=>{
     try {
 
       console.log(req.params.id)
