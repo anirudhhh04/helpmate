@@ -6,6 +6,7 @@ const mongoose=require("mongoose");
 const cors=require("cors");
 const userroute=require('./src/routes/User');
 const workerroute=require('./src/routes/Worker');
+const Worker=require('./src/models/Worker');
 
 
 
@@ -36,7 +37,13 @@ mongoose.connect('mongodb://127.0.0.1:27017/mini').then(()=> {
         },
       });
     const upload = multer({storage:storage});
-    app.post('/upload',upload.single('image'),(req,res)=>{
+    app.post('/upload/:id',upload.single('image'),async (req,res)=>{
+        const id=req.params.id;
+        const updatedDoc = await Worker.findOneAndUpdate(
+            { _id: id },      // Find criteria
+            { $set: { imageurl: `uploads/${req.file.filename}`} }, // Update operation
+            { new: true }               // Return the updated document
+          );
         res.json({
            success:1,
            imageurl:`http://localhost:${port}/uploads/${req.file.filename}`

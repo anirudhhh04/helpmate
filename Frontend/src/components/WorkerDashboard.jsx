@@ -17,7 +17,7 @@ function WorkerDashboard() {
     const token = localStorage.getItem('workerToken');
     if (token) {
       const decoded = jwt_decode(token);
-      console.log(decoded)
+      
       setWorkerId(decoded._id);
     }
   }, []); 
@@ -29,10 +29,10 @@ function WorkerDashboard() {
       try {
         if (workerId) { // ✅ Only fetch if workerId is set
           console.log(workerId, "FROM WORKER")
-          const response = await axios.get(`http://localhost:4000/api/worker/${workerId}`);
+          const response = await axios.get(`http://localhost:4000/api/worker/get/${workerId}`);
           const workerData = response.data;
           if (workerData.imageurl) {
-            setImageUrl("http://localhost:4000"+workerData.imageurl);
+            setImageUrl("http://localhost:4000/"+workerData.imageurl);
           } else {
             setImageUrl("http://localhost:4000/images/profilelogo.png");
           }
@@ -74,7 +74,7 @@ function WorkerDashboard() {
     f.append("image", image);
 
     try {
-      const response = await axios.post('http://localhost:4000/upload', f);
+      const response = await axios.post(`http://localhost:4000/upload/${workerId}`, f);
       
       setImageUrl(response.data.imageurl);
       alert("Profile photo updated!");
