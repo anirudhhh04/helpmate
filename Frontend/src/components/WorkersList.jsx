@@ -47,7 +47,7 @@ function WorkersList() {
                   <p className="contact">📞 {worker.contactNumber}</p>
                 </div>
                 <div className="worker-photo">
-                  <img src={worker.profileUrl} alt={worker.username} />
+                  <img src={"http://localhost:4000/"+worker.imageurl} alt={worker.username} />
                 </div>
               </div>
             </div>

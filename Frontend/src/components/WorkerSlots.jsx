@@ -14,7 +14,7 @@ function WorkerSlots() {
     const fetchWorkerData = async () => {
       try {
         //fetch worker details
-        const workerResponse = await axios.get(`http://localhost:4000/api/worker/${wid}`);
+        const workerResponse = await axios.get(`http://localhost:4000/api/worker/get/${wid}`);
         setWorker(workerResponse.data);
 
         //fetch available slots
@@ -38,10 +38,7 @@ function WorkerSlots() {
   const handleSubmit = async () => {
     try {
       const userId = window.localStorage.getItem("userId");
-      if (!userId) {
-        alert("Please log in to book a slot.");
-        return;
-      }
+      
 
       await axios.post("http://localhost:4000/api/users/book", {
         wid,

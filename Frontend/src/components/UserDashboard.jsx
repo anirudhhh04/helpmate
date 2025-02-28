@@ -1,30 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import jwt_decode from 'jwt-decode';
 
 function UserDashboard() {
   const [location, setLocation] = useState("");
   const [services, setServices] = useState([]);
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState("");
   const navigate = useNavigate();
   const profile = useRef(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return;
+    const decoded = jwt_decode(token);
+    setUserId(decoded._id);
+  }, []);
+  
+  useEffect(() => {
     const fetchUser = async () => {
+      if (!userId) return;
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const response = await axios.get("http://localhost:4000/api/user/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(`http://localhost:4000/api/user/profile/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
-
+  
     fetchUser();
-  }, []);
+  }, [userId]);
+  
 
   const fetchServices = async () => {
     if (!location.trim()) {
@@ -82,7 +89,7 @@ function UserDashboard() {
 
       <div ref={profile} className="profile-container">
         <h3 className="profile-title">User Profile</h3>
-        {user ? (<p className="profile-info"><strong>Name:</strong> {user.name}</p>) : (
+        {user ? (<p className="profile-info"><strong>Name:</strong> {user.username}</p>) : (
           <p className="loading-text">Loading user details...</p>
         )}
       </div>
