@@ -3,11 +3,11 @@ const User=require('../models/User');
 const Booking=require('../models/Booking');
 const router=express.Router();
 
-router.get("/bookings/:id",async (req,res)=>{
+router.get("/bookings/:id/:date",async (req,res)=>{
     const userid=req.params.id;
-
+    const date=req.params.date;
     try{
-     const bookings=await Booking.find({uid:userid,date:new Date().toISOString().split("T")[0]});
+     const bookings=await Booking.find({uid:userid,date});
      if(bookings) return res.status(200).json({bookings,success:true});
      return res.status(500).json({success:false});
     }catch(err){
@@ -60,14 +60,14 @@ router.get('/profile/:id',async (req,res)=>{
 });
 
 router.post('/book',async (req,res)=>{
-    const {wid,startHour,endHour,userId,description,status}=req.body;
+    const {wid,startHour,endHour,userId,description,status,date}=req.body;
     const booleanStatus = status === "true" || status === true;
     if (!wid || !userId || !startHour || !endHour) {
       return res.status(400).json({ message: "Missing required fields", success: false });
   }
     try{
         const book=await Booking.create({
-          wid,uid:userId,description,status,startHour,endHour,
+          wid,uid:userId,description,status,startHour,endHour,date
         });
      console.log(book);
     if(book) return res.status(200).json({message:"created book",success:true}); 

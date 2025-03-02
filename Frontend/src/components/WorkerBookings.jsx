@@ -8,6 +8,7 @@ function WorkerBookings() {
 
   useEffect(() => {
     const fetchBookings = async () => {
+     
       try {
         const  token= window.localStorage.getItem("workerToken");
         const decoded = jwt_decode(token);
@@ -19,13 +20,19 @@ function WorkerBookings() {
       }catch (error) {
         alert("Error fetching bookings");
       }
+    
     };
     fetchBookings();
+    const interval = setInterval(() => {
+      fetchBookings();
+    }, 5000);
+  
+    return () => clearInterval(interval);
   }, []);
-  const handleSave = async (bookingId, starthour,endhour) => {
+  const handleSave = async (bookingId, starthour,endhour,date) => {
     try {
       //confirm the Booking (Set status = true)
-     const response= await axios.put(`http://localhost:4000/api/worker/bookings/confirm/${bookingId}`, { status: true });
+     const response= await axios.put(`http://localhost:4000/api/worker/bookings/confirm/${bookingId}`, { status: true ,date});
         if(response.data.success){
           alert("booking updated");
         }else{
@@ -34,7 +41,7 @@ function WorkerBookings() {
         const  token= window.localStorage.getItem("workerToken");
         const decoded = jwt_decode(token);
       // update the worker's slots (Set slot availability to false)
-     const putresponse=await axios.put(`http://localhost:4000/api/worker/slots/update/${decoded._id}`, { starthour,endhour, available: false });
+     const putresponse=await axios.put(`http://localhost:4000/api/worker/slots/update/${decoded._id}`, { starthour,endhour, available: false,date });
       console.log(putresponse.data.success);
       alert("Booking Confirmed!");
   
@@ -62,7 +69,7 @@ function WorkerBookings() {
               <p><strong>Description:</strong> {booking.description}</p>
               <p><strong>Slot:</strong> {booking.startHour}-{booking.endHour}</p>
               <p><strong>Date:</strong> {booking.date}</p>
-              <button onClick={() => handleSave(booking._id,booking.startHour,booking.endHour)}>{booking.status ? "Confirmed" : "Confirm"} </button>
+              <button onClick={() => handleSave(booking._id,booking.startHour,booking.endHour,booking.date)}>{booking.status ? "Confirmed" : "Confirm"} </button>
 
             </li>
           ))}

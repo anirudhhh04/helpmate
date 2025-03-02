@@ -12,11 +12,11 @@ router.put("/slots/update/:wid",async (req,res)=>{
   const endhour=req.body.endhour;
 
   try{
-  const currentDate = new Date().toISOString().split("T")[0];
+ 
    const  slot=await Slot.findOneAndUpdate(
       { 
         wid, 
-        date: currentDate, 
+        date: req.body.date, 
         "slots.startHour": starthour, 
         "slots.endHour": endhour 
       }, 
@@ -37,7 +37,7 @@ router.put("/bookings/confirm/:id",async (req,res)=>{
   const bookingid=req.params.id;
   try{
      const booking=await Booking.findOneAndUpdate(
-      { _id: bookingid, date: new Date().toISOString().split("T")[0] },
+      { _id: bookingid, date: req.body.date },
       { status: req.body.status }, 
       { new: true }                 
     );
@@ -60,8 +60,9 @@ router.get("/bookings/:id",async (req,res)=>{
       return res.status(500).json({message:err.message,success:false});
     }
 });
-router.get("/slots/:id",async (req,res)=>{
+router.get("/slots/:id/:date",async (req,res)=>{
   const id=req.params.id;
+  const date=req.params.date;
   
   try{
   if (!mongoose.isValidObjectId(id)) {
@@ -69,7 +70,7 @@ router.get("/slots/:id",async (req,res)=>{
   }
 
   // Find slot by id and select only the 'slots' field
-  const slot = await Slot.findOne({wid: id}).select("slots");
+  const slot = await Slot.findOne({wid: id,date}).select("slots");
   
   // If no slot found
   if (!slot) {

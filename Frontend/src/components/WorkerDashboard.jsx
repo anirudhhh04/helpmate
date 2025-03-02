@@ -28,7 +28,7 @@ function WorkerDashboard() {
     const fetchWorkerData = async () => {
       try {
         if (workerId) { // ✅ Only fetch if workerId is set
-          console.log(workerId, "FROM WORKER")
+          
           const response = await axios.get(`http://localhost:4000/api/worker/get/${workerId}`);
           const workerData = response.data;
           if (workerData.imageurl) {
@@ -42,7 +42,7 @@ function WorkerDashboard() {
       }
     };
     fetchWorkerData();
-  }, [workerId]);
+  }, [workerId,selectedDate]);
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -54,7 +54,7 @@ function WorkerDashboard() {
   };
   const handleSubmit = async () => {
     try {
-      const date = selectedDate.toISOString().split("T")[0];
+      const date = selectedDate.toLocaleDateString("en-CA");
 
       const response=await axios.post("http://localhost:4000/api/worker/slots", { workerId, date, slots });
       alert(response.data.message);
@@ -83,7 +83,7 @@ function WorkerDashboard() {
     }
   };
 
-  console.log(imageUrl)
+  
   return (
     <div className="worker-dashboard">
       <h2>Worker Dashboard</h2>

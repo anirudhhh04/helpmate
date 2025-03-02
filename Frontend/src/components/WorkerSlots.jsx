@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function WorkerSlots() {
   const { wid } = useParams(); // Fetch worker ID from URL
@@ -10,9 +12,11 @@ function WorkerSlots() {
   const [endHour, setEndhour] = useState(null);
   const [description, setDescription] = useState("");
   const [worker, setWorker] = useState({});
-  const [bookings, setBookings] = useState([]); // Store user's booked slots
+  const [bookings, setBookings] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date()); 
 
   useEffect(() => {
+    
     const fetchWorkerData = async () => {
       try {
         //fetch worker details
@@ -21,15 +25,15 @@ function WorkerSlots() {
         setWorker(workerResponse.data);
         console.log(worker)
         //fetch available slots
-        const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}`);
+        const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}/${selectedDate.toLocaleDateString("en-CA")}`,selectedDate.toLocaleDateString("en-CA"));
         setSlots(slotsResponse.data.slots);
-        console.log(slots)
+       
 
         //fetch user's bookings for this worker
         const token= window.localStorage.getItem("userToken");
         const decoded = jwt_decode(token);
         if (token) {
-          const bookingsResponse = await axios.get(`http://localhost:4000/api/user/bookings/${decoded._id}`);
+          const bookingsResponse = await axios.get(`http://localhost:4000/api/user/bookings/${decoded._id}/${selectedDate.toLocaleDateString("en-CA")}`);
           if(bookingsResponse.data.success){
           setBookings(bookingsResponse.data.bookings);}
         }
@@ -38,14 +42,17 @@ function WorkerSlots() {
       } catch (error) {
         alert("Could not fetch worker data");
       }
+      
     };
     fetchWorkerData();
     const interval = setInterval(() => {
-      fetchWorkerData(); // Fetch data every 5 seconds
+      fetchWorkerData();
     }, 5000);
   
     return () => clearInterval(interval);
-  }, [wid]);
+  
+  
+  }, [wid,selectedDate]);
 
   const handleSubmit = async () => {
     try {
@@ -59,7 +66,8 @@ function WorkerSlots() {
         endHour,
         userId:decoded._id,
         description,
-        status: false, //initially set status as false (Pending)
+        status: false,
+        date:selectedDate.toLocaleDateString("en-CA"), //initially set status as false (Pending)
       });
       if(response.data.success){
       alert("Booking Confirmed!");}else{
@@ -79,8 +87,16 @@ function WorkerSlots() {
       <h3>{worker.username} - {worker.service}</h3>
       <p>Location: {worker.location}</p>
       <p>Description : {worker.description} </p>
+      <div>
+        <h3>Select a Date</h3>
+        <DatePicker 
+          selected={selectedDate} 
+          onChange={(date) => setSelectedDate(date)} 
+          dateFormat="yyyy/MM/dd" 
+        />
+      </div>
 
-      <h2>Available Slots</h2>
+      <h2>Available Slots for {selectedDate ? selectedDate.toLocaleDateString() : "Select a date"}</h2>
       {Array.isArray(slots) && slots.length === 0 && <p>No slots available for today.</p>}
       {Array.isArray(slots) && slots.length > 0 && slots.map((slot, index) => {
       const time = `${slot.startHour}-${slot.endHour}`;
