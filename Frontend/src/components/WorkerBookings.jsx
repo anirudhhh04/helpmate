@@ -1,30 +1,41 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import jwt_decode from "jwt-decode";
 
 function WorkerBookings() {
-  const { workerId } = useParams();
+ 
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/workers/${workerId}/bookings`);
-        setBookings(response.data);
+        const  token= window.localStorage.getItem("workerToken");
+        const decoded = jwt_decode(token);
+        const response = await axios.get(`http://localhost:4000/api/worker/bookings/${decoded._id}`);
+        if(response.data.success){
+        setBookings(response.data.bookings);}else{
+          alert(response.data.message);
+        }
       }catch (error) {
         alert("Error fetching bookings");
       }
     };
     fetchBookings();
-  }, [workerId]);
-  const handleSave = async (bookingId, slot) => {
+  }, []);
+  const handleSave = async (bookingId, starthour,endhour) => {
     try {
       //confirm the Booking (Set status = true)
-      await axios.put(`http://localhost:5000/api/workers/bookings/${bookingId}/confirm`, { status: true });
-  
+     const response= await axios.put(`http://localhost:4000/api/worker/bookings/confirm/${bookingId}`, { status: true });
+        if(response.data.success){
+          alert("booking updated");
+        }else{
+          alert("failed");
+        }
+        const  token= window.localStorage.getItem("workerToken");
+        const decoded = jwt_decode(token);
       // update the worker's slots (Set slot availability to false)
-      await axios.put(`http://localhost:5000/api/workers/${workerId}/slots/update`, { slot, available: false });
-  
+     const putresponse=await axios.put(`http://localhost:4000/api/worker/slots/update/${decoded._id}`, { starthour,endhour, available: false });
+      console.log(putresponse.data.success);
       alert("Booking Confirmed!");
   
       //update the state to reflect changes immediately
@@ -45,12 +56,13 @@ function WorkerBookings() {
       <h2>Bookings for You</h2>
       {bookings.length === 0 ? ( <p>No bookings yet</p>) : (
         <ul>
-          {bookings.map((booking) => (
-            <li key={booking.bid}>
-              <h3>{booking.userId.name}</h3>
+          {bookings.map((booking,index) => (
+            <li key={index}>
+              <h3>{booking.uid.username}</h3>
               <p><strong>Description:</strong> {booking.description}</p>
-              <p><strong>Slot:</strong> {booking.slot}</p>
-              <button onClick={() => handleSave(booking.bid,booking.slot)}>{booking.status ? "Confirmed" : "Confirm"} </button>
+              <p><strong>Slot:</strong> {booking.startHour}-{booking.endHour}</p>
+              <p><strong>Date:</strong> {booking.date}</p>
+              <button onClick={() => handleSave(booking._id,booking.startHour,booking.endHour)}>{booking.status ? "Confirmed" : "Confirm"} </button>
 
             </li>
           ))}

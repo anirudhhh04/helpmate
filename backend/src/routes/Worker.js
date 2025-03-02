@@ -3,9 +3,63 @@ const mongoose = require('mongoose');
 const Worker=require('../models/Worker');
 const Slot=require("../models/Slot");
 const Convertslot=require("../controller/Convertslot");
+const Booking=require("../models/Booking");
 const router=express.Router();
 
+router.put("/slots/update/:wid",async (req,res)=>{
+  const wid=req.params.wid;
+  const starthour=req.body.starthour;
+  const endhour=req.body.endhour;
 
+  try{
+  const currentDate = new Date().toISOString().split("T")[0];
+   const  slot=await Slot.findOneAndUpdate(
+      { 
+        wid, 
+        date: currentDate, 
+        "slots.startHour": starthour, 
+        "slots.endHour": endhour 
+      }, 
+      { 
+        $set: { "slots.$.available": false } // ✅ Correct - Updates only the matched slot
+      },
+      { new: true } 
+    );
+    if(slot) return res.status(200).json({success:true});
+    return res.status(500).json({success:false});
+
+  }catch(err){
+    return res.status(500).json({message:err.message,success:false});
+  }
+})
+
+router.put("/bookings/confirm/:id",async (req,res)=>{
+  const bookingid=req.params.id;
+  try{
+     const booking=await Booking.findOneAndUpdate(
+      { _id: bookingid, date: new Date().toISOString().split("T")[0] },
+      { status: req.body.status }, 
+      { new: true }                 
+    );
+    if(booking) return res.status(200).json({message:"booking confirmed",success:true});
+    return res.status(500).json({message:"booking doesnt exist",success:false});
+
+  }catch(err){
+    return res.status(500).json({message:err.message,success:true});
+  }
+
+})
+router.get("/bookings/:id",async (req,res)=>{
+    const wid=req.params.id;
+    try{
+      const bookings=await Booking.find({wid}).populate('uid', 'username');;
+     if(bookings) return res.status(200).json({bookings,success:true});
+     return res.status(500).json({message:"no bookings",success:false});
+
+    }catch(err){
+      return res.status(500).json({message:err.message,success:false});
+    }
+});
 router.get("/slots/:id",async (req,res)=>{
   const id=req.params.id;
   
@@ -16,7 +70,7 @@ router.get("/slots/:id",async (req,res)=>{
 
   // Find slot by id and select only the 'slots' field
   const slot = await Slot.findOne({wid: id}).select("slots");
-  console.log(slot);
+  
   // If no slot found
   if (!slot) {
     return res.status(404).json({ message: "Slot not found" });
@@ -50,11 +104,11 @@ router.post('/login',async (req,res)=>{
     try{
         const workerregistered=await Worker.findOne({email:req.body.email});
         if(workerregistered==null){
-            res.json({message:"worker not registered",success:false });
+          return res.json({message:"worker not registered",success:false });
         }
     const token= await Worker.matchpassword(email,password);
     if(!token) return res.json({message:"invalid email or password",success:false});
-    res.status(200).json({ message: 'User logged in',token,success:true });
+     return res.status(200).json({ message: 'User logged in',token,success:true });
 } catch (error) {
   console.error('Error logging in:', error);
   res.status(500).json({ error: 'Server error' });
@@ -67,7 +121,7 @@ router.get('/get/:id',async (req,res)=>{
       console.log(req.params.id)
         
         const worker = await Worker.findById(req.params.id);
-        console.log(worker)
+        
         if (!worker) {
           return res.status(404).json({ message: "Worker not found" });
         }

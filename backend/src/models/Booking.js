@@ -2,16 +2,17 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
   uid:{
-    type:Number,
-    required:true,
+    type: mongoose.Schema.Types.ObjectId,  
+    ref: "User",   
+    required: true
   },
   wid:{
-    type:Number,
+    type:String,
     required:true,
   },
   date:{
-    type:date,
-    required:true,
+    type: String,
+    default: () => new Date().toISOString().split("T")[0],
   },
   status:{
    type:Boolean,
@@ -20,7 +21,9 @@ const bookingSchema = new mongoose.Schema({
   description:{
     type:String,
     required:true,
-  }
+  },
+  startHour:Number,
+  endHour:Number,
   
  
   },{
