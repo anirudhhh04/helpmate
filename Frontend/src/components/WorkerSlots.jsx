@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {GoDotFill as G } from "react-icons/go";
+import { FaTools, FaMapMarkerAlt } from "react-icons/fa";
 
 function WorkerSlots() {
   const { wid } = useParams(); // Fetch worker ID from URL
@@ -24,7 +26,7 @@ function WorkerSlots() {
          setWorker(workerResponse.data.worker);
          console.log("Fetched worker data:", workerResponse.data);
         }
-        // Fetch available slots (use query parameter instead of URL segment)
+  
         const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}/${selectedDate.toLocaleDateString("en-CA")}`);
 
         if (slotsResponse.data.success) {
@@ -85,55 +87,99 @@ function WorkerSlots() {
       alert("Failed to book a slot in server");
     }
   };
-
-  return (
-    <div>
-      <h2>Worker Profile</h2>
-      <img src={"http://localhost:4000/"+worker.imageurl} alt="Worker" style={{ width: "150px", height: "150px" }} />
-      <h3>{worker.username} - {worker.service}</h3>
-      <p>Location: {worker.location}</p>
-      <p>Description : {worker.description} </p>
-      <div>
-        <h3>Select a Date</h3>
-        <DatePicker 
-          selected={selectedDate} 
-          onChange={(date) => setSelectedDate(date)} 
-          dateFormat="yyyy/MM/dd" 
-        />
-      </div>
-
-      <h2>Available Slots for {selectedDate ? selectedDate.toLocaleDateString() : "Select a date"}</h2>
-      {Array.isArray(slots) && slots.length === 0 && <p>No slots available for today.</p>}
-      {Array.isArray(slots) && slots.length > 0 && slots.map((slot, index) => {
-      const time = `${slot.startHour}-${slot.endHour}`;
-      const available = slot.available;
-      const con = bookings.find((b) => b.startHour === slot.startHour && b.endHour === slot.endHour); // for checking confirmation
-  return (
-    <button 
-      key={index} 
-      onClick={() => {
-        setStarthour(slot.startHour);
-        setEndhour(slot.endHour);}
-      } 
-      disabled={!available} 
-      style={{ backgroundColor: startHour === slot.startHour && endHour===slot.endHour? "green" : "" }}
-    >
-      {time} {available ? "(Available)" : ""} {con && ` - ${con.status ? "Confirmed ✅" : "Pending ⏳"}`}
-    </button>
-  );
-})}
-
-      <h3>Provide a Description</h3>
-      <textarea 
-        value={description} 
-        onChange={(e) => setDescription(e.target.value)} 
-        rows="4" 
-        cols="50"
+return (
+  <div className="worker-slots-container">
+    <div className="worker-profile">
+      <img
+        src={`http://localhost:4000/${worker.imageurl}`}
+        alt="Worker"
+        className="worker-avatar"
       />
-
-      <button onClick={handleSubmit}>Confirm Booking</button>
+      <div className="worker-details">
+      <h2 className="worker-name">
+       
+        {worker.username}
+      </h2>
+      <p className="worker-service">
+         <FaTools size={15} style={{ marginRight: "8px" }} />
+         {worker.service}
+      </p>
+      <p className="worker-location">
+        <FaMapMarkerAlt style={{ marginRight: "8px" }} />
+        {worker.location}
+      </p>
+      <p className="worker-description">{worker.description}</p>
+      </div>
     </div>
-  );
+
+    <div className="date-picker-section">
+      <h3>Select Date</h3>
+      <DatePicker
+        selected={selectedDate}
+        onChange={(date) => setSelectedDate(date)}
+        dateFormat="yyyy/MM/dd"
+        className="date-picker-input"
+      />
+    </div>
+
+    <div className="slots-section">
+      <h3>
+        Available Slots for{" "}
+        {selectedDate ? selectedDate.toLocaleDateString() : "Select a date"}
+      </h3>
+      <div className="slots-grid">
+        {Array.isArray(slots) && slots.length === 0 && (
+          <p>No slots available for this day.</p>
+        )}
+        {slots.map((slot, index) => {
+          const time = `${slot.startHour} - ${slot.endHour}`;
+          const available = slot.available;
+          const con = bookings.find(
+            (b) =>
+              b.startHour === slot.startHour && b.endHour === slot.endHour
+          );
+          return (
+            <button
+              key={index}
+              onClick={() => {
+                setStarthour(slot.startHour);
+                setEndhour(slot.endHour);}}
+              disabled={!available}
+              className={`slots-button ${
+                startHour === slot.startHour && endHour === slot.endHour ? "selected-slot": ""
+              } ${!available ? "disabled-slot" : ""}`} >
+              {time}{" "}
+              {available ? <G color=" #16d71f" size={16}/> : "" }
+              {con && `  ${con.status ? "✅" : "⏳"}`}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
+    <div className="description-section">
+      <h3>Booking Description</h3>
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Describe your need..."
+        className="description-input"
+        rows="4"
+      />
+    </div>
+
+    <div className="actions-buttons">
+      <button onClick={handleSubmit} className="confirm-booking-button">
+        Confirm Booking
+      </button>
+      {worker.contactNumber && (
+        <a href={`tel:${worker.contactNumber}`} className="call-now-button">
+          Call Now
+        </a>
+      )}
+    </div>
+  </div>
+);
 }
 
 export default WorkerSlots;

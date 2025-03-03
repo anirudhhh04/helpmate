@@ -59,12 +59,12 @@ function WorkerBookings() {
   
   
   return (
-    <div>
+    <div className="worker-bookings-container">
       <h2>Bookings for You</h2>
       {bookings.length === 0 ? ( <p>No bookings yet</p>) : (
         <ul>
           {bookings.map((booking,index) => (
-            <li key={index}>
+            <li key={index} className="worker-booking-card">
               <h3>{booking.uid.username}</h3>
               <p><strong>Description:</strong> {booking.description}</p>
               <p><strong>Slot:</strong> {booking.startHour}-{booking.endHour}</p>

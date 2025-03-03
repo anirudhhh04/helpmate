@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { FaUser, FaEnvelope, FaLock, FaWrench, FaMapMarkerAlt, FaPhone } from "react-icons/fa"; 
+import { FaUser,FaTools, FaEnvelope, FaLock, FaWrench, FaMapMarkerAlt, FaPhone } from "react-icons/fa"; 
 
 const WorkerRegister = () => {
   const [formData, setFormData] = useState({
@@ -73,7 +73,7 @@ const WorkerRegister = () => {
           />
         </div>
         <div className="input-container">
-          <FaWrench className="input-icon" />
+          <FaTools className="input-icon" />
           <input
             className="register-input"
             type="text"
@@ -97,7 +97,7 @@ const WorkerRegister = () => {
           />
         </div>
         <div className="input-container">
-          <FaWrench className="input-icon" />
+          <FaTools className="input-icon" />
           <input
             className="register-input"
             type="text"
