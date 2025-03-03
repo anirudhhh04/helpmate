@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import jwt_decode from 'jwt-decode';
-
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -43,6 +42,7 @@ function WorkerDashboard() {
     };
     fetchWorkerData();
   }, [workerId,selectedDate]);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
