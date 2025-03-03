@@ -65,6 +65,8 @@ router.get("/slots/:id/:date",async (req,res)=>{
   const date=req.params.date;
   
   try{
+
+    console.log(id, date)
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ message: "Invalid Slot ID" });
   }
@@ -72,13 +74,14 @@ router.get("/slots/:id/:date",async (req,res)=>{
   // Find slot by id and select only the 'slots' field
   const slot = await Slot.findOne({wid: id,date}).select("slots");
   
+  console.log(slot, "AVAILABLE SLOTS")
   // If no slot found
   if (!slot) {
-    return res.status(404).json({ message: "Slot not found" });
+    return res.status(404).json({ message: "Slot not found" ,success:false});
   }
 
   // If slot found, return only the slots field
-  return res.status(200).json({slots:slot.slots});
+  return res.status(200).json({slots:slot.slots,success:true});
 
 } catch(error) {
   console.error(error);
@@ -124,11 +127,11 @@ router.get('/get/:id',async (req,res)=>{
         const worker = await Worker.findById(req.params.id);
         
         if (!worker) {
-          return res.status(404).json({ message: "Worker not found" });
+          return res.status(404).json({ message: "Worker not found",success:false });
         }
     
         
-       return res.status(200).json(worker);
+       return res.status(200).json({worker,success:true});
     
       } catch (error) {
         

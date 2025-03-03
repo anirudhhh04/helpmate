@@ -16,43 +16,48 @@ function WorkerSlots() {
   const [selectedDate, setSelectedDate] = useState(new Date()); 
 
   useEffect(() => {
-    
     const fetchWorkerData = async () => {
       try {
-        //fetch worker details
+        // Fetch worker details
         const workerResponse = await axios.get(`http://localhost:4000/api/worker/get/${wid}`);
-       
-        setWorker(workerResponse.data);
-        console.log(worker)
-        //fetch available slots
-        const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}/${selectedDate.toLocaleDateString("en-CA")}`,selectedDate.toLocaleDateString("en-CA"));
-        setSlots(slotsResponse.data.slots);
-       
-
-        //fetch user's bookings for this worker
-        const token= window.localStorage.getItem("userToken");
-        const decoded = jwt_decode(token);
-        if (token) {
-          const bookingsResponse = await axios.get(`http://localhost:4000/api/user/bookings/${decoded._id}/${selectedDate.toLocaleDateString("en-CA")}`);
-          if(bookingsResponse.data.success){
-          setBookings(bookingsResponse.data.bookings);}
+        if (workerResponse.data.success){
+         setWorker(workerResponse.data.worker);
+         console.log("Fetched worker data:", workerResponse.data);
         }
+        // Fetch available slots (use query parameter instead of URL segment)
+        const slotsResponse = await axios.get(`http://localhost:4000/api/worker/slots/${wid}/${selectedDate.toLocaleDateString("en-CA")}`);
 
-        
-      } catch (error) {
-        alert("Could not fetch worker data");
+        if (slotsResponse.data.success) {
+          setSlots(slotsResponse.data.slots);
+        }
+  
+        // Fetch user's bookings for this worker
+        const token = window.localStorage.getItem("userToken");
+        if (token) {
+          const decoded = jwt_decode(token);
+          const bookingsResponse = await axios.get(`http://localhost:4000/api/user/bookings/${decoded._id}/${selectedDate.toLocaleDateString("en-CA")}`);
+          if (bookingsResponse.data.success) {
+            setBookings(bookingsResponse.data.bookings);
+          }else{
+            setBookings([]);
+          }
+        }
+      } catch (err) {
+        console.log(err.message);
+        setSlots([]); 
+        // alert("Could not fetch worker data");
       }
-      
     };
-    fetchWorkerData();
+  
+    fetchWorkerData(); // Initial fetch
+  
+    // Set interval to refresh data every 5 seconds
     const interval = setInterval(() => {
       fetchWorkerData();
     }, 5000);
   
-    return () => clearInterval(interval);
-  
-  
-  }, [wid,selectedDate]);
+    return () => clearInterval(interval); // Cleanup function to prevent memory leaks
+  }, [wid, selectedDate]); 
 
   const handleSubmit = async () => {
     try {
@@ -76,6 +81,7 @@ function WorkerSlots() {
      
     } catch (error) {
       console.log(error.message)
+      console.log(selectedDate)
       alert("Failed to book a slot in server");
     }
   };
