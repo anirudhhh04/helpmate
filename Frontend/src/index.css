@@ -179,6 +179,62 @@ body {
   background-color: #f8f9fa;
   flex: 1;
 }
+/* Profile Circle Button */
+.profile-circle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.profile-sidebar {
+  position: fixed;
+  top: 0;
+  right: -360px;
+  width: 324px;
+  height: 100%;
+  background-color: #696161;
+  color: white;
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+
+.profile-sidebar.show {
+  right: 0;
+}
+
+.profile-sidebar .close-btn {
+  position: relative;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.logout-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #e63946;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 .profile-button {
   background-color: #28a745;
@@ -202,7 +258,28 @@ body {
   margin-bottom: 20px;
   color: #333;
 }
+.quick-services {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
 
+.service-icon {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #e9ecef;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.service-icon:hover {
+  background-color: #d1d1d1;
+  transform:scale(1.05);
+}
 .search-container {
   display: flex;
   justify-content: center;
@@ -548,11 +625,20 @@ h2 {
 
 /*worker slots*/
 .worker-slots-container {
-  padding: 20px;
-  min-width: 60vh;
   margin: auto;
+  margin-top:250px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  height: 100vh;
+  height: 1000px;
+  max-width: 600px;
+  width: 90%;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  min-width: 60vh;
+  /* overflow: hidden; */
+ 
 }
 
 .worker-profile {
@@ -560,7 +646,8 @@ h2 {
   gap: 8px;
   align-items: center;
   margin-bottom: 20px;
-  background-color: #f7f7f7;
+  margin-top: 20px;
+  background-color: #d3dbe2;
   padding: 25px;
   border-radius: 12px;
 }
@@ -581,12 +668,14 @@ h2 {
 .worker-name {
   margin: 0;
   font-size: 25px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .worker-service {
   font-weight: bold;
   color: #140404;
   font-size: 20px;
+  margin-left:15px;
 }
 
 .worker-location,
@@ -594,6 +683,8 @@ h2 {
   margin-top: 8px;
   color: #1a0f0f;
   font-size:18px ;
+  margin-left: 10px;
+  margin-right: 15px;
 }
 
 .date-picker-section {
@@ -609,7 +700,8 @@ h2 {
 }
 
 .slots-section {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  margin-right:5px
 }
 
 .slots-grid {
@@ -618,6 +710,7 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
+  margin-left: 25px;
   
 }
 
@@ -661,16 +754,22 @@ h2 {
 }
 
 .description-section {
-  margin-bottom: 30px;
+  margin-bottom: 50px;
+  margin-top:60px;
+  width:100%;
+  max-width:600px;
+  
 }
 
 .description-input {
   width: 100%;
-  padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   resize: none;
   font-size: 14px;
+  box-sizing: border-box;
+  height:150px;
+  
 }
 
 .actions-buttons {
@@ -678,6 +777,7 @@ h2 {
   gap: 10px;
   justify-content: center;
   align-items: center;
+  
 }
 
 .confirm-booking-button,
@@ -688,6 +788,7 @@ h2 {
   border-radius: 8px;
   text-decoration: none;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
 .confirm-booking-button {

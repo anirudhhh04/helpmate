@@ -101,7 +101,6 @@ return (
         {worker.username}
       </h2>
       <p className="worker-service">
-         <FaTools size={15} style={{ marginRight: "8px" }} />
          {worker.service}
       </p>
       <p className="worker-location">

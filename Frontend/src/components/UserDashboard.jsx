@@ -8,8 +8,8 @@ function UserDashboard() {
   const [services, setServices] = useState([]);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
+  const [showSidebar, setShowSidebar] = useState(false); 
   const navigate = useNavigate();
-  const profile = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
@@ -17,7 +17,7 @@ function UserDashboard() {
     const decoded = jwt_decode(token);
     setUserId(decoded._id);
   }, []);
-  
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!userId) return;
@@ -28,10 +28,8 @@ function UserDashboard() {
         console.error("Error fetching user:", error);
       }
     };
-  
     fetchUser();
   }, [userId]);
-  
 
   const fetchServices = async () => {
     if (!location.trim()) {
@@ -46,30 +44,61 @@ function UserDashboard() {
     }
   };
 
-  const scrollToProfile = () => {
-    profile.current.scrollIntoView({ behavior: "smooth" });
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    navigate("/user/login");
+  };
+
+  const handleQuickService = (serviceName) => {
+    navigate(`/services/Thrissur/${serviceName}`);
   };
 
   return (
     <div className="dashboard-container">
-      <button onClick={scrollToProfile} className="profile-button">👤 Profile</button>
 
-      <h2 className="dashboard-title">User Dashboard</h2>
+      {/* Profile Circle Button */}
+      <button
+        className="profile-circle"
+        onClick={() => setShowSidebar(!showSidebar)}
+      >
+        👤
+      </button>
+
+      {/* Sidebar */}
+      <div className={`profile-sidebar ${showSidebar ? "show" : ""}`}>
+        <button className="close-btn" onClick={() => setShowSidebar(false)}></button>
+        {user ? (
+          <>
+            <p><strong>{user.username}</strong></p>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
+
+      <h2 className="dashboard-title">Search For Services</h2>
 
       <div className="search-container">
-        <input 
-          type="text" 
-          placeholder="Enter Location" 
-          value={location} 
-          onChange={(e) => setLocation(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Enter Location / Thrissur"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              fetchServices(); 
+              fetchServices();
             }
           }}
           className="search-input"
         />
         <button onClick={fetchServices} className="search-button">🔍 Search</button>
+      </div>
+      <div className="quick-services">
+        <button className="service-icon" onClick={() => handleQuickService("Plumber")}>🚰 Plumber</button>
+        <button className="service-icon" onClick={() => handleQuickService("Electrician")}>💡 Electrician</button>
+        <button className="service-icon" onClick={() => handleQuickService("Doctor")}>🩺 Doctor</button>
+        <button className="service-icon" onClick={() => handleQuickService("Engineer")}>🏗️ Engineer</button>
       </div>
 
       {services.length > 0 ? (
@@ -77,7 +106,10 @@ function UserDashboard() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <p><strong>{service}</strong></p>
-              <button onClick={() => navigate(`/services/${location}/${service}`)} className="view-workers-button">
+              <button
+                onClick={() => navigate(`/services/${location}/${service}`)}
+                className="view-workers-button"
+              >
                 View Available Workers
               </button>
             </div>
@@ -86,13 +118,6 @@ function UserDashboard() {
       ) : (
         <p className="no-services">No services found.</p>
       )}
-
-      <div ref={profile} className="profile-container">
-        <h3 className="profile-title">User Profile</h3>
-        {user ? (<p className="profile-info"><strong>Name:</strong> {user.username}</p>) : (
-          <p className="loading-text">Loading user details...</p>
-        )}
-      </div>
     </div>
   );
 }

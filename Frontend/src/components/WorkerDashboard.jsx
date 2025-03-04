@@ -58,6 +58,11 @@ function WorkerDashboard() {
 
       const response=await axios.post("http://localhost:4000/api/worker/slots", { workerId, date, slots });
       alert(response.data.message);
+      const resetSlots = {};
+      Object.keys(slots).forEach((slot) => {
+      resetSlots[slot] = false;
+    });
+    setSlots(resetSlots);
     } catch (err) {
       alert("Error updating slots");
     }
