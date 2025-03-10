@@ -32,7 +32,7 @@ function WorkerBookings() {
   const handleSave = async (bookingId, starthour,endhour,date) => {
     try {
       //confirm the Booking (Set status = true)
-     const response= await axios.put(`http://localhost:4000/api/worker/bookings/confirm/${bookingId}`, { status: true ,date});
+     const response= await axios.put(`http://localhost:4000/api/worker/bookings/confirm/${bookingId}`, { status:1 ,date});
         if(response.data.success){
           alert("booking updated");
         }else{
@@ -48,7 +48,7 @@ function WorkerBookings() {
       //update the state to reflect changes immediately
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
-          booking.bid === bookingId ? { ...booking, status: true } : booking
+          booking.bid === bookingId ? { ...booking, status:1 } : booking
         )
       );
   
@@ -69,8 +69,10 @@ function WorkerBookings() {
               <p><strong>Description:</strong> {booking.description}</p>
               <p><strong>Slot:</strong> {booking.startHour}-{booking.endHour}</p>
               <p><strong>Date:</strong> {booking.date}</p>
-              <button onClick={() => handleSave(booking._id,booking.startHour,booking.endHour,booking.date)}>{booking.status ? "Confirmed" : "Confirm"} </button>
-
+              <p><strong>Status:</strong> {booking.deleted ? "❌ Canceled" : booking.status==1 ? "✅" :booking.status==0 ? "⏳":""}</p>
+              {!booking.deleted && (
+              <button onClick={() => handleSave(booking._id,booking.startHour,booking.endHour,booking.date)}>{booking.status==1 ? "Confirmed" : "Confirm"} </button>
+              )}
             </li>
           ))}
         </ul>

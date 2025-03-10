@@ -66,7 +66,7 @@ router.get("/slots/:id/:date",async (req,res)=>{
   
   try{
 
-    console.log(id, date)
+    
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ message: "Invalid Slot ID" });
   }
@@ -74,7 +74,7 @@ router.get("/slots/:id/:date",async (req,res)=>{
   // Find slot by id and select only the 'slots' field
   const slot = await Slot.findOne({wid: id,date}).select("slots");
   
-  console.log(slot, "AVAILABLE SLOTS")
+  
   // If no slot found
   if (!slot) {
     return res.status(404).json({ message: "Slot not found" ,success:false});
@@ -84,7 +84,7 @@ router.get("/slots/:id/:date",async (req,res)=>{
   return res.status(200).json({slots:slot.slots,success:true});
 
 } catch(error) {
-  console.error(error);
+ 
   return res.status(500).json({ message: "Server error", error: error.message });
 }
 }

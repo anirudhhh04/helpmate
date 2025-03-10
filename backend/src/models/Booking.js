@@ -15,7 +15,7 @@ const bookingSchema = new mongoose.Schema({
     default: () => new Date().toISOString().split("T")[0],
   },
   status:{
-   type:Boolean,
+   type:Number,
    required:true,
   },
   description:{
@@ -24,6 +24,10 @@ const bookingSchema = new mongoose.Schema({
   },
   startHour:Number,
   endHour:Number,
+  deleted:{
+    type:Boolean,
+    default:false,
+  },
   
  
   },{

@@ -73,8 +73,8 @@ function WorkerSlots() {
         endHour,
         userId:decoded._id,
         description,
-        status: false,
-        date:selectedDate.toLocaleDateString("en-CA"), //initially set status as false (Pending)
+        status: 0, //0 for pending
+        date:selectedDate.toLocaleDateString("en-CA"), 
       });
       if(response.data.success){
       alert("Booking Confirmed!");}else{
@@ -82,11 +82,26 @@ function WorkerSlots() {
       }
      
     } catch (error) {
-      console.log(error.message)
-      console.log(selectedDate)
+      
       alert("Failed to book a slot in server");
     }
   };
+  const handleCancelBooking = async (userId, date, startHour) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/user/bookings/cancel/${userId}/${date}/${startHour}`
+      );
+      if (response.data.success) {
+        alert("Booking Canceled");
+      } 
+      setBookings((prevBookings) =>
+        prevBookings.filter((b) => !(b.startHour === startHour && b.date === date))
+      );
+    } catch (error) {
+      console.error(error);
+      alert("Error canceling booking");
+    }
+};  
 return (
   <div className="worker-slots-container">
     <div className="worker-profile">
@@ -133,23 +148,27 @@ return (
         {slots.map((slot, index) => {
           const time = `${slot.startHour} - ${slot.endHour}`;
           const available = slot.available;
-          const con = bookings.find(
-            (b) =>
-              b.startHour === slot.startHour && b.endHour === slot.endHour
-          );
+          const con = bookings.find( (b) =>b.startHour === slot.startHour && b.endHour === slot.endHour);
+          console.log(con);
           return (
             <button
               key={index}
               onClick={() => {
                 setStarthour(slot.startHour);
                 setEndhour(slot.endHour);}}
-              disabled={!available}
+              onDoubleClick={() => {
+                  if (con.status===1 || con.status===0) { 
+                    if (window.confirm("Do you want to cancel this booking ?")) {
+                      handleCancelBooking(con.uid, con.date, con.startHour);}
+                  }
+                }} 
+              disabled={!available && (!con || con.status !== 1)}
               className={`slots-button ${
                 startHour === slot.startHour && endHour === slot.endHour ? "selected-slot": ""
               } ${!available ? "disabled-slot" : ""}`} >
               {time}{" "}
-              {available ? <G color=" #16d71f" size={16}/> : "" }
-              {con && `  ${con.status ? "✅" : "⏳"}`}
+              {available ? <G color="rgb(13, 216, 23)" size={16}/> : "" }
+              {con && (con.status === 1 ? "✅" : con.status === 0 ? "⏳" : "")}
             </button>
           );
         })}
