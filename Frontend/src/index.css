@@ -907,4 +907,48 @@ h2 {
     font-size: 15px;
   }
 }
+.rating-c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin: 12px 0;
+  font-size: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.rating-c button {
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(20, 12, 12, 0.1);
+  justify-content: center;
+  padding: 0px;
+}
+
+.rating-c button:hover {
+  background-color: #dcdcdc;
+  transform: scale(1.05);
+}
+
+.rating-c button:disabled {
+  background-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.rating-c span {
+  font-weight: bold;
+  font-size: 1.4rem;
+  min-width: 40px;
+  text-align: center;
+  color: #222;
+}
+
 

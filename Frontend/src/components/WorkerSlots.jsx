@@ -106,7 +106,7 @@ return (
   <div className="worker-slots-container">
     <div className="worker-profile">
       <img
-        src={`http://localhost:4000/${worker.imageurl}`}
+        src={worker.imageurl ? "http://localhost:4000/"+worker.imageurl:"http://localhost:4000/images/profilelogo.png"}
         alt="Worker"
         className="worker-avatar"
       />
@@ -139,7 +139,11 @@ return (
     <div className="slots-section">
       <h3>
         Available Slots for{" "}
-        {selectedDate ? selectedDate.toLocaleDateString() : "Select a date"}
+        {selectedDate ? selectedDate.toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+}) : "Select a date"}
       </h3>
       <div className="slots-grid">
         {Array.isArray(slots) && slots.length === 0 && (

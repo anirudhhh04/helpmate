@@ -24,6 +24,10 @@ const bookingSchema = new mongoose.Schema({
   },
   startHour:Number,
   endHour:Number,
+  rated:{
+    type:Boolean,
+    default:false,
+  },
   deleted:{
     type:Boolean,
     default:false,

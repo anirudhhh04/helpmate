@@ -27,7 +27,7 @@ function WorkersList() {
   return (
     <div className="container">
       <h2 className="title">
-        Workers Offering {service} in {location}
+        Available {service}s in {location}
       </h2>
 
       {workers.length === 0 ? (
@@ -47,7 +47,7 @@ function WorkersList() {
                   <p className="contact">📞 {worker.contactNumber}</p>
                 </div>
                 <div className="worker-photo">
-                  <img src={"http://localhost:4000/"+worker.imageurl} alt={worker.username} />
+                  <img src={worker.imageurl ? "http://localhost:4000/"+worker.imageurl:"http://localhost:4000/images/profilelogo.png"} alt={worker.username} />
                 </div>
               </div>
             </div>

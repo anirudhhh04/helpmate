@@ -4,7 +4,45 @@ const Worker=require('../models/Worker');
 const Slot=require("../models/Slot");
 const Convertslot=require("../controller/Convertslot");
 const Booking=require("../models/Booking");
+const User=require("../models/User");
 const router=express.Router();
+
+
+router.put("/rate/:bookingId",async (req,res)=>{
+
+    const bookid=req.params.bookingId;
+    const value=req.body.ratingValue;
+   try{
+       const booking=await Booking.findByIdAndUpdate(
+         bookid, 
+        { $set: { rated: true  } },
+        { new: true}
+        );
+        if (!booking) {
+          return res.status(404).json({ message: "Booking not found" });
+        }
+    
+        const user = await User.findByIdAndUpdate(
+          booking.uid,
+          { $inc: { score: value } }, 
+          { new: true }
+        );
+    
+        if (!user) {
+          return res.status(404).json({ message: "User not found" ,success:false});
+        }
+    
+        return res.status(200).json({ message: "Rating submitted", success:true });
+    
+
+
+   }catch(err){
+
+    return res.status(500).json({message:err.message,success:false});
+   }
+
+
+});
 
 router.put("/slots/update/:wid",async (req,res)=>{
   const wid=req.params.wid;
@@ -52,7 +90,7 @@ router.put("/bookings/confirm/:id",async (req,res)=>{
 router.get("/bookings/:id",async (req,res)=>{
     const wid=req.params.id;
     try{
-      const bookings=await Booking.find({wid}).populate('uid', 'username');;
+      const bookings=await Booking.find({wid}).populate('uid', 'username score');
      if(bookings) return res.status(200).json({bookings,success:true});
      return res.status(500).json({message:"no bookings",success:false});
 
