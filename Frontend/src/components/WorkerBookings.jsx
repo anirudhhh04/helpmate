@@ -77,6 +77,7 @@ function WorkerBookings() {
             <li key={index} className="worker-booking-card">
               <h3>{booking.uid.username}</h3>
               <div className="rating-c">
+                <h2>worker rating</h2>
                 <button onClick={()=> {
                   if(!booking.rated){
                     handleRating(booking._id, -1)

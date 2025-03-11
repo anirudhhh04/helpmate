@@ -827,6 +827,7 @@ h2 {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  height: 700px;
 }
 
 .worker-bookings-container h2 {
@@ -844,11 +845,14 @@ h2 {
 
 .worker-booking-card {
   background-color: #f8f8f8;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
+  min-width: 100px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  height: auto;
+  /* overflow: hidden; */
 }
 
 .worker-booking-card:hover {
@@ -856,13 +860,13 @@ h2 {
 }
 
 .worker-booking-card h3 {
-  font-size: 20px;
+  font-size: 60px;
   margin-bottom: 10px;
   color: #444;
 }
 .worker-booking-card p {
   margin: 6px 0;
-  font-size: 16px;
+  font-size: 18px;
   color: #666;
 }
 .worker-booking-card button {
@@ -916,7 +920,10 @@ h2 {
   font-size: 1.2rem;
   flex-wrap: wrap;
 }
-
+.rating-c h2{
+  font-size: 20px;
+  margin-right: 10px;
+}
 .rating-c button {
   background-color: #f0f0f0;
   color: #333;
