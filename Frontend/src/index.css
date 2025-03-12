@@ -860,9 +860,14 @@ h2 {
 }
 
 .worker-booking-card h3 {
-  font-size: 40px;
+  font-size: 30px;
+  /* border:1px solid; */
+  border-radius: 30px;
   margin-bottom: 10px;
   color: #444;
+  padding:10px;
+  box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 .worker-booking-card p {
   margin: 6px 0;
@@ -904,6 +909,7 @@ h2 {
 
   .worker-booking-card p {
     font-size: 14px;
+    padding: 10px;
   }
 
   .worker-booking-card button {
@@ -919,8 +925,13 @@ h2 {
   margin: 12px 0;
   font-size: 1.2rem;
   flex-wrap: wrap;
+  border-radius: 30px;
+  padding: 8px;
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 .rating-c h2{
+  padding-top: 10px;
   font-size: 20px;
   margin-right: 10px;
 }
