@@ -6,6 +6,7 @@ const mongoose=require("mongoose");
 const cors=require("cors");
 const userroute=require('./src/routes/User');
 const workerroute=require('./src/routes/Worker');
+const ratingroute=require('./src/routes/Rating');
 const Worker=require('./src/models/Worker');
 
 
@@ -13,7 +14,7 @@ const Worker=require('./src/models/Worker');
 const port=4000;
 
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 app.use(express.static(path.resolve("./public")));
 app.use('/images', express.static(path.resolve(__dirname, 'src/public/images')));
 console.log(__dirname)
@@ -24,7 +25,7 @@ app.use('/uploads', express.static(path.resolve(__dirname, 'src/public/uploads')
 app.use(express.json());
 app.use('/api/user',userroute);
 app.use('/api/worker',workerroute);
-
+app.use('/api/rating',ratingroute);
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/mini').then(()=> {
