@@ -25,6 +25,7 @@ function WorkerLogin() {
   };
 
   return (
+     <div className="p-s">
         <div className="register-container">
           <h2 className="register-title">Worker Login</h2>
     
@@ -49,6 +50,7 @@ function WorkerLogin() {
     
           <button className="register-button" onClick={handleLogin}>Login</button>
         </div>
+     </div>
       );
 }
 

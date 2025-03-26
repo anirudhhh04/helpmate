@@ -11,6 +11,7 @@ import WorkerSlots from "./components/WorkerSlots.jsx";
 import WorkerBookings from "./components/WorkerBookings.jsx";
 function App() {
   return (
+    <div className="parent-c">
       <Routes>
         <Route path="/" element={<SelectingPage/>}/>
         <Route path="/user/login" element={<UserLogin />} />
@@ -23,6 +24,7 @@ function App() {
         <Route path="/worker/slots/:wid" element={<WorkerSlots />} />
         <Route path="/worker/bookings" element={<WorkerBookings/>}/>
       </Routes>
+   </div>
  
   );
 }

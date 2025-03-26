@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 function SelectingPage() {
   return (
-  <div className="select">
+  <div className="p-s">
     <div className="select-container">
       <h2 className="select-title">Select User Type</h2>
       <div className="select-buttons">
@@ -13,7 +13,8 @@ function SelectingPage() {
         </Link>
       </div>
     </div>
-  </div>
+</div>
+
   );
 }
 

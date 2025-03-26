@@ -26,6 +26,7 @@ function UserLogin() {
   };
 
   return (
+  <div className="p-s">
     <div className="register-container">
       <h2 className="register-title">User Login</h2>
 
@@ -52,6 +53,7 @@ function UserLogin() {
         Login
       </button>
     </div>
+  </div>
   );
 }
 export default UserLogin;

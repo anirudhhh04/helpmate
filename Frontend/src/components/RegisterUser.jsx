@@ -20,6 +20,7 @@ function RegisterUser() {
   };
 
   return (
+  <div className="p-s">
     <div className="register-container">
       <h2 className="register-title">Register as a User</h2>
       <div className="input-container">
@@ -61,6 +62,7 @@ function RegisterUser() {
         </Link>
       </p>
     </div>
+  </div>
   );
 }
 

@@ -14,7 +14,7 @@ const Worker=require('./src/models/Worker');
 const port=4000;
 
 
-app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.static(path.resolve("./public")));
 app.use('/images', express.static(path.resolve(__dirname, 'src/public/images')));
 console.log(__dirname)

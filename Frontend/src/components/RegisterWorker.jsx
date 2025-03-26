@@ -41,6 +41,7 @@ const WorkerRegister = () => {
   };
 
   return (
+  <div className="p-s">
     <div className="register-container">
       <h2 className="register-title">Worker Registration</h2>
       <form onSubmit={handleSubmit}>
@@ -127,6 +128,7 @@ const WorkerRegister = () => {
         Already Registered? <Link to="/worker/login">Login</Link>
       </p>
     </div>
+  </div>
   );
 };
 
