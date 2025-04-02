@@ -8,8 +8,27 @@ function UserDashboard() {
   const [services, setServices] = useState([]);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
-  const [showSidebar, setShowSidebar] = useState(false); 
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const inputRef = useRef(null); // Reference for input field
+
+  // Function to fetch suggestions
+  const fetchSuggestions = async () => {
+    
+  
+    try {
+      const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`); // Ensure backend route is correct
+      setSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  useEffect(() => {
+    const delaySearch = setTimeout(fetchSuggestions, 300); // Debounce API call
+    return () => clearTimeout(delaySearch);
+  }, [location]);
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
@@ -55,12 +74,8 @@ function UserDashboard() {
 
   return (
     <div className="dashboard-container">
-
       {/* Profile Circle Button */}
-      <button
-        className="profile-circle"
-        onClick={() => setShowSidebar(!showSidebar)}
-      >
+      <button className="profile-circle" onClick={() => setShowSidebar(!showSidebar)}>
         👤
       </button>
 
@@ -79,21 +94,31 @@ function UserDashboard() {
 
       <h2 className="dashboard-title">Search For Services</h2>
 
-      <div className="search-container">
+      {/* Search Bar with Suggestions */}
+      <div className="search-container" style={{ position: "relative" }}>
         <input
           type="text"
           placeholder="Enter Location / Thrissur"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              fetchServices();
-            }
-          }}
           className="search-input"
+          ref={inputRef}
+          onBlur={() => setTimeout(() => setSuggestions([]), 300)} // Delay clearing to allow clicks
         />
         <button onClick={fetchServices} className="search-button">🔍 Search</button>
+
+        {/* Display Suggestions */}
+        {suggestions.length > 0 && (
+          <ul className="suggestions-dropdown">
+            {suggestions.map((loc, index) => (
+              <li key={index} onClick={() => { setLocation(loc); setSuggestions([]); }}>
+                {loc}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
       <div className="quick-services">
         <button className="service-icon" onClick={() => handleQuickService("Plumber")}>🚰 Plumber</button>
         <button className="service-icon" onClick={() => handleQuickService("Electrician")}>💡 Electrician</button>
@@ -106,10 +131,7 @@ function UserDashboard() {
           {services.map((service, index) => (
             <div key={index} className="service-card">
               <p><strong>{service}</strong></p>
-              <button
-                onClick={() => navigate(`/services/${location}/${service}`)}
-                className="view-workers-button"
-              >
+              <button onClick={() => navigate(`/services/${location}/${service}`)} className="view-workers-button">
                 View Available Workers
               </button>
             </div>

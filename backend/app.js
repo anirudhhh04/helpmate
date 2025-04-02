@@ -38,6 +38,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mini').then(()=> {
         },
       });
     const upload = multer({storage:storage});
+
+
     app.post('/upload/:id',upload.single('image'),async (req,res)=>{
         const id=req.params.id;
         const updatedDoc = await Worker.findOneAndUpdate(
@@ -51,9 +53,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mini').then(()=> {
         })
  });
 
-
-
-
+ 
 
 
 app.listen(port,()=>{

@@ -312,6 +312,7 @@ body {
   transform:scale(1.05);
 }
 .search-container {
+  position: relative; /* Ensures absolute positioning works inside */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -326,22 +327,35 @@ body {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  width: 100%;
 }
 
-.search-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12.5px 15px;
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%; /* Positions below the search input */
+  left: 0;
+  width: 100%; /* Match input width */
+  background: #fff;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 5px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
   border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s ease-in-out;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.search-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.01);
+.suggestions-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
+
+.suggestions-dropdown li:hover {
+  background: #f0f0f0;
+}
+
 
 .services-container {
   margin: 30px auto;

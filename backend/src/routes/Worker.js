@@ -5,7 +5,20 @@ const Slot=require("../models/Slot");
 const Convertslot=require("../controller/Convertslot");
 const Booking=require("../models/Booking");
 const User=require("../models/User");
+const Rating = require("../models/Rating");
 const router=express.Router();
+
+router.get("/locations", async (req, res) => {
+  try {
+    const query = req.query.q || "";
+    const locations = await Worker.find({ location: { $regex: query, $options: "i" } })
+      .distinct("location"); // Get unique locations
+
+    res.status(200).json(locations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 
 router.put("/rate/:bookingId",async (req,res)=>{
@@ -201,13 +214,34 @@ router.get('/:location/:service',async (req,res)=>{
     const location=req.params.location.toLowerCase();
     const service=req.params.service.toLowerCase();
     const workers=await Worker.find({location:location,service:service});
-    return res.json(workers) ;
+    if (workers.length === 0) {
+      return res.status(404).json({ message: "No workers found for this service." });
+    }
+
+    // ✅ Fetch worker ratings & calculate average
+    const workersWithRatings = await Promise.all(
+      workers.map(async (worker) => {
+        const ratings = await Rating.find({ wid: worker._id });
+
+        // ✅ Calculate average rating
+        const averageRating =
+          ratings.length > 0
+            ? ratings.reduce((acc, r) => acc + r.rating, 0) / ratings.length
+            : 0;
+
+        return { ...worker.toObject(), averageRating }; // ✅ You forgot to return this
+      })
+    );
+
+    // ✅ Sort workers by rating (highest first)
+    workersWithRatings.sort((a, b) => b.averageRating - a.averageRating);
+
+    res.status(200).json(workersWithRatings);
   }catch(err){
     return res.json({message:err.message});
   }
-
-
 });
+
 router.post("/slots",async (req,res)=>{
   try {
     const { workerId, date, slots } = req.body;
