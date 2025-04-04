@@ -106,7 +106,7 @@ function WorkerDashboard() {
         <h3>Select a Date</h3>
         <DatePicker selected={selectedDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" />
       </div>
-      <div>
+      <div >
         <h3>Available Slots for {selectedDate.toLocaleDateString()}</h3>
         <div className="slot-grid">
         {Object.keys(slots).map((slot) => (

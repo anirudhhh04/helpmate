@@ -487,6 +487,10 @@ h2 {
 .upload-form button:hover {
   background: #0056b3;
 }
+.av h3 {
+  justify-content: center;
+  font-family: 'Courier New', Courier, monospace;
+}
 
 .slot-grid {
   display: grid;
@@ -727,7 +731,8 @@ h2 {
 
 .slots-section {
   margin-bottom: 40px;
-  margin-right:5px
+  margin-right:5px;
+  
 }
 
 .slots-grid {
