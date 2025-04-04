@@ -26,6 +26,10 @@ function UserDashboard() {
   };
 
   useEffect(() => {
+    if (location.length < 2) {
+      setSuggestions([]);
+      return;
+    }
     const delaySearch = setTimeout(fetchSuggestions, 300); // Debounce API call
     return () => clearTimeout(delaySearch);
   }, [location]);
