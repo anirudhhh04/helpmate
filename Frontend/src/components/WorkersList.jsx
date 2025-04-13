@@ -13,7 +13,11 @@ function WorkersList() {
         const response = await axios.get(
           `http://localhost:4000/api/worker/${location}/${service}`
         );
-        setWorkers(response.data);
+        if (Array.isArray(response.data)) {
+          setWorkers(response.data.filter(worker => worker)); 
+        } else {
+          setWorkers([]);
+        }
       } catch (error) {
         alert("No workers found for this service!");
       }

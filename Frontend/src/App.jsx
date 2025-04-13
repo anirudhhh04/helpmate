@@ -9,11 +9,13 @@ import UserDashboard from "./components/UserDashboard.jsx";
 import WorkersList from "./components/WorkersList.jsx";
 import WorkerSlots from "./components/WorkerSlots.jsx";
 import WorkerBookings from "./components/WorkerBookings.jsx";
+import StartPage from "./components/StartPage.jsx";
 function App() {
   return (
     <div className="parent-c">
       <Routes>
-        <Route path="/" element={<SelectingPage/>}/>
+        <Route path="/" element={<StartPage/>}/>
+        <Route path="/selecting" element={<SelectingPage/>}/>
         <Route path="/user/login" element={<UserLogin />} />
         <Route path="/worker/login" element={<WorkerLogin />} />
         <Route path="/user/register" element={<RegisterUser />} />
@@ -25,7 +27,6 @@ function App() {
         <Route path="/worker/bookings" element={<WorkerBookings/>}/>
       </Routes>
    </div>
- 
   );
 }
 

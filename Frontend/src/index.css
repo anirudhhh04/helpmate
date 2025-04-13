@@ -13,6 +13,7 @@ body {
   display: flex;
   background-color: white;
 }
+
 .register-container {
   background-color: #fff;
   padding: 50px; 
@@ -31,7 +32,26 @@ body {
   background:transparent;
  
 }
-
+.header {
+  position:fixed;
+  top: 0;                   
+  background-color: #212386;               
+  padding: 1px;           
+  text-align: center;         
+  z-index: 1000;              
+  width: 100%;   
+  left:0;  
+              
+}
+header h2{
+  font-size: 30px;
+  color: white;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+header p{
+    font-size: 19px;
+    color: #545f65;
+}
 .register-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -203,8 +223,8 @@ body {
 }
 /*User Dashboard */
 .dashboard-container {
- 
-  min-height: 98vh;
+  margin-top: 10px;
+  min-height: 90vh;
   min-width: 100vh;
   padding: 20px;
   background-color: #f8f9fa;
@@ -212,13 +232,14 @@ body {
 }
 /* Profile Circle Button */
 .profile-circle {
+  margin-top: 110px;
   position: fixed;
   top: 20px;
   right: 20px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #007bff;
+  background-color: #1572d6;
   color: white;
   font-size: 24px;
   border: none;
@@ -312,6 +333,7 @@ body {
   transform:scale(1.05);
 }
 .search-container {
+  position: relative; /* Ensures absolute positioning works inside */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -319,29 +341,54 @@ body {
   max-width: 600px;
   margin: 0 auto 20px;
 }
+.search-button{
+  background-color: #1374db;
+  font-size: 15px;
+  border-radius: 8px;
+  height: 43px;
+  font-family:Arial, Helvetica, sans-serif;
+  padding: 8px;
 
+}
+.search-button:hover{
+  background-color: #00aaff;
+  cursor: pointer;
+}
 .search-input {
   flex: 1;
   padding: 12px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  width: 100%;
 }
 
-.search-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12.5px 15px;
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%; /* Positions below the search input */
+  left: 0;
+  width: 100%; /* Match input width */
+  background: #fff;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 5px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
   border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s ease-in-out;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.search-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.01);
+.suggestions-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
+
+.suggestions-dropdown li:hover {
+  background: #f0f0f0;
+}
+
 
 .services-container {
   margin: 30px auto;
@@ -558,6 +605,7 @@ h2 {
   max-width: 1100px;
   margin: auto;
   padding: 20px;
+  margin-top: 90px;
 }
 
 .title {
@@ -665,6 +713,7 @@ h2 {
   width: 100%;
   min-width: 80vh;
   max-width: 700px;
+  margin-top: 110px;
   background: #ffffff;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 
