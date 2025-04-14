@@ -44,13 +44,13 @@ function WorkerDashboard() {
   const handleDateChange = (date) => setSelectedDate(date);
 
   const handleSlotToggle = (slot) => {
-    setSlots((prev) => ({ ...prev, [slot]: !prev[slot] }));
+    setSlots((prev) => ({ ...prev, [slot]: prev[slot] }));
   };
 
   const handleAddSlot = () => {
     if (!startTime || !endTime) return alert("Please select both start and end time.");
     const newSlot = `${startTime} - ${endTime}`;
-    setSlots((prev) => ({ ...prev, [newSlot]: false }));
+    setSlots((prev) => ({ ...prev, [newSlot]: true }));
     setStartTime("");
     setEndTime("");
   };
@@ -89,7 +89,17 @@ function WorkerDashboard() {
   };
 
   return (
-    <div className="worker-dashboard" style={{ padding: "20px", fontFamily: "Segoe UI, sans-serif" }}>
+    <div className="worker-dashboard"   style={{
+      padding: "20px",
+      fontFamily: "Segoe UI, sans-serif",
+      maxWidth: "800px",
+      margin: "0 auto",
+      boxSizing: "border-box",
+      backgroundColor: "#f9f9f9",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      minHeight: "100vh" 
+    }}>
       {/* Logout Button */}
       <div style={{ textAlign: "right" }}>
         <button
@@ -125,23 +135,24 @@ function WorkerDashboard() {
         <DatePicker selected={selectedDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" />
       </div>
 
-      {/* Start/End Time Picker */}
+      
       <div style={{ marginTop: "20px" }}>
         <h3>Create Custom Slot</h3>
-        <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "10px" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", margin: "10px " }}>
           <label>Start Time:</label>
           <input
-            type="time"
+            type="text"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
-            style={{ padding: "5px" }}
+            style={{ padding: "5px", minWidth: "60px"}}
           />
           <label>End Time:</label>
           <input
-            type="time"
+            type="text"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
-            style={{ padding: "5px" }}
+            style={{ padding: "5px", minWidth: "60px" }}
           />
           <button
             onClick={handleAddSlot}
@@ -158,16 +169,33 @@ function WorkerDashboard() {
           </button>
         </div>
       </div>
-
-      {/* Slot Grid */}
+      </div>  
       <div>
-        <h3>Available Slots for {selectedDate.toLocaleDateString()}</h3>
-        <div className="slot-grid" style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
+        <h3>Available Slots for {selectedDate.toLocaleDateString("en-GB")}</h3>
+        <div className="slot-grid" style={{    
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px",
+          marginBottom: "20px",
+          justifyContent: "center",
+          maxWidth: "100%",
+          overflowWrap: "break-word",
+          wordBreak: "break-word",
+         }}>
           {Object.keys(slots).map((slot) => (
             <button
               key={slot}
               onClick={() => handleSlotToggle(slot)}
               className={`slot-button ${slots[slot] ? "active" : ""}`}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                backgroundColor: slots[slot] ? "#28a745" : "#e9ecef",
+                color: slots[slot] ? "white" : "black",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
             >
               {slot}
             </button>
@@ -176,10 +204,47 @@ function WorkerDashboard() {
       </div>
 
       {/* Action Buttons */}
-      <div className="action-buttons">
-        <button onClick={handleSubmit}>Save Slots</button>
-        <button onClick={handleViewBookings}>View Bookings</button>
-      </div>
+      <div
+  className="action-buttons"
+  style={{
+    display: "flex",
+      justifyContent: "center",
+      gap: "20px",
+      marginTop: "20px",
+      flexWrap: "wrap",
+      maxWidth: "100%",
+  }}
+>
+  <button
+    onClick={handleSubmit}
+    style={{
+      padding: "10px 20px",
+      backgroundColor: "#28a745",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      whiteSpace: "nowrap",
+    }}
+  >
+    Save Slots
+  </button>
+  <button
+    onClick={handleViewBookings}
+    style={{
+      padding: "10px 20px",
+      backgroundColor: "#17a2b8",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      whiteSpace: "nowrap",
+    }}
+  >
+    View Bookings
+  </button>
+</div>
+
     </div>
   );
 }

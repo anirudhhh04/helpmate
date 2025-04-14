@@ -207,9 +207,12 @@ function WorkerSlots() {
           {slots.map((slot, index) => {
             const time = `${slot.startHour} - ${slot.endHour}`;
             const available = slot.available;
-            const con = bookings.find(
+            const matchingBookings = bookings.filter(
               (b) => b.startHour === slot.startHour && b.endHour === slot.endHour
             );
+            const bookingCount = matchingBookings.length;
+            const con = matchingBookings[0]; // used for cancellation check
+            
             return (
               <button
                 key={index}
@@ -233,6 +236,7 @@ function WorkerSlots() {
               >
                 {time} {available ? <G color="green" size={16} /> : ""}
                 {con && (con.status === 1 ? "✅" : con.status === 0 ? "⏳" : "")}
+                {bookingCount > 0 && <span> ({bookingCount} booked)</span>}
               </button>
             );
           })}

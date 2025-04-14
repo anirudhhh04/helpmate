@@ -198,10 +198,10 @@ router.get('/services/:location',async (req,res)=>{
      const services = await Worker.find({ location: location }).distinct('service');
 
     if (services.length === 0) {
-      return res.status(404).json({ message: "No services found in this location" });
+      return res.status(404).json({ message: "No services found in this location" ,services});
     }
    
-    return res.json(services);
+    return res.status(200).json({services});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
@@ -246,6 +246,7 @@ router.post("/slots",async (req,res)=>{
   try {
     const { workerId, date, slots } = req.body;
 
+    
     // Validate workerId
     if (!mongoose.Types.ObjectId.isValid(workerId)) {
       return res.status(400).json({ message: "Invalid Worker ID" });

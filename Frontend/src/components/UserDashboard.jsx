@@ -61,7 +61,7 @@ function UserDashboard() {
     }
     try {
       const response = await axios.get(`http://localhost:4000/api/worker/services/${location}`);
-      setServices(response.data);
+      setServices(response.data.services);
     } catch (error) {
       alert("Error fetching services");
     }

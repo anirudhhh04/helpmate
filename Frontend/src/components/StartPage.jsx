@@ -8,6 +8,8 @@ function StartPage() {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const skipSuggestionFetch = useRef(false);
+
 
   // Fetch location suggestions
   const fetchSuggestions = async () => {
@@ -20,6 +22,10 @@ function StartPage() {
   };
 
   useEffect(() => {
+    if (skipSuggestionFetch.current) {
+      skipSuggestionFetch.current = false;
+      return;
+    }
     if (location.length < 2) {
       setSuggestions([]);
       return;
@@ -36,7 +42,7 @@ function StartPage() {
     }
     try {
       const response = await axios.get(`http://localhost:4000/api/worker/services/${location}`);
-      setServices(response.data);
+      setServices(response.data.services);
     } catch (error) {
       alert("Error fetching services");
     }
@@ -108,8 +114,10 @@ function StartPage() {
                 <li
                   key={index}
                   onClick={() => {
-                    setLocation(loc);
+                    skipSuggestionFetch.current = true; 
                     setSuggestions([]);
+                    setLocation(loc);
+                    inputRef.current.blur(); 
                   }}
                 >
                   {loc}
