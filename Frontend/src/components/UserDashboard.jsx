@@ -10,15 +10,13 @@ function UserDashboard() {
   const [userId, setUserId] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [showAbout, setShowAbout] = useState(false); // NEW
   const navigate = useNavigate();
-  const inputRef = useRef(null); // Reference for input field
+  const inputRef = useRef(null);
 
-  // Function to fetch suggestions
   const fetchSuggestions = async () => {
-    
-  
     try {
-      const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`); // Ensure backend route is correct
+      const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`);
       setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -30,7 +28,7 @@ function UserDashboard() {
       setSuggestions([]);
       return;
     }
-    const delaySearch = setTimeout(fetchSuggestions, 300); // Debounce API call
+    const delaySearch = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(delaySearch);
   }, [location]);
 
@@ -76,8 +74,63 @@ function UserDashboard() {
     navigate(`/services/Thrissur/${serviceName}`);
   };
 
+  const toggleAbout = () => {
+    setShowAbout(prev => !prev);
+  };
+
   return (
     <div className="dashboard-container">
+      {/* HELPMATE Title */}
+      <header style={{ textAlign: "center", marginTop: "10px", marginBottom: "20px", position: "relative" }}>
+        <h1 className="main-title" style={{ fontSize: "2.5rem", margin: 0 }}>
+          <span style={{ color: "#007bff" }}>HELP</span>
+          <span style={{ color: "#ffc107" }}>MATE</span>
+        </h1>
+        <p style={{ fontSize: "1.1rem", color: "#777", fontStyle: "italic" }}>
+          A Customer-Worker Interaction System
+        </p>
+
+        {/* About Button */}
+        <div style={{ position: "absolute", top: 0, right: 0 }}>
+          <button
+            onClick={toggleAbout}
+            style={{
+              padding: "6px 14px",
+              backgroundColor: "#6c757d",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              transition: "background-color 0.3s"
+            }}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "#5c636a")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "#6c757d")}
+          >
+            About
+          </button>
+        </div>
+      </header>
+
+      {/* About Text */}
+      {showAbout && (
+        <div style={{
+          maxWidth: "750px",
+          margin: "0 auto 30px",
+          backgroundColor: "#f9f9f9",
+          padding: "15px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          fontSize: "1rem",
+          color: "#444",
+          textAlign: "center"
+        }}>
+          Helpmate is a simple and smart platform designed to bridge the gap between users and local professionals.
+          Whether it's for essential daily services or scheduled assistance, Helpmate lets you discover nearby workers,
+          check their availability in real time, and book appointments with ease — all in one place.
+        </div>
+      )}
+
       {/* Profile Circle Button */}
       <button className="profile-circle" onClick={() => setShowSidebar(!showSidebar)}>
         👤
@@ -107,7 +160,7 @@ function UserDashboard() {
           onChange={(e) => setLocation(e.target.value)}
           className="search-input"
           ref={inputRef}
-          onBlur={() => setTimeout(() => setSuggestions([]), 300)} // Delay clearing to allow clicks
+          onBlur={() => setTimeout(() => setSuggestions([]), 300)}
         />
         <button onClick={fetchServices} className="search-button">🔍 Search</button>
 

@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { GoDotFill as G } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6"; // ⭐ Star icon
 
@@ -24,8 +25,8 @@ function WorkerSlots() {
   const slotsRef = useRef(null);
   const confirmBookingButtonRef = useRef(null);
   const ctref = useRef(null);
-
-   useEffect(() =>{
+  const navigate = useNavigate();
+  useEffect(() =>{
     const fetchcomments=async ()=>{
     const ratingsRes = await axios.get(`http://localhost:4000/api/rating/worker/${wid}`);
         if (ratingsRes.data.success) {
@@ -159,7 +160,28 @@ function WorkerSlots() {
 
   return (
     <div className="worker-slots-container">
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 20px" }}>
+  <button
+    onClick={() => navigate("/user/dashboard")}
+    style={{
+      padding: "8px 16px",
+      backgroundColor: "#007bff",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontSize: "0.9rem",
+      transition: "background-color 0.3s"
+    }}
+    onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
+    onMouseLeave={(e) => (e.target.style.backgroundColor = "#007bff")}
+  >
+     Home Page
+  </button>
+</div>
+
       <div className="worker-profile">
+
         <img
           src={
             worker.imageurl

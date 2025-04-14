@@ -6,12 +6,13 @@ function StartPage() {
   const [location, setLocation] = useState("");
   const [services, setServices] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [showAbout, setShowAbout] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const skipSuggestionFetch = useRef(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
 
-  // Fetch location suggestions
   const fetchSuggestions = async () => {
     try {
       const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`);
@@ -34,7 +35,6 @@ function StartPage() {
     return () => clearTimeout(delaySearch);
   }, [location]);
 
-  // Fetch services based on location
   const fetchServices = async () => {
     if (!location.trim()) {
       alert("Please enter a location!");
@@ -60,6 +60,10 @@ function StartPage() {
     navigate('/selecting');
   };
 
+  const toggleAbout = () => {
+    setShowAbout(prev => !prev);
+  };
+
   return (
     <div className="dashboard-container">
       {/* ========== Header ========== */}
@@ -72,25 +76,62 @@ function StartPage() {
           A Customer-Worker Interaction System
         </p>
 
-        {/* Login Button Top-Right */}
-        <button
-          onClick={handleLogin}
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            padding: "8px 16px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "0.9rem"
-          }}
-        >
-          Login
-        </button>
+        {/* Login and About Buttons */}
+        <div style={{ position: "absolute", top: 0, right: 0, display: "flex", gap: "10px" }}>
+          <button
+            onClick={toggleAbout}
+            onMouseEnter={() => setHoveredButton("about")}
+            onMouseLeave={() => setHoveredButton(null)}
+            style={{
+              padding: "8px 16px",
+              backgroundColor:hoveredButton==="about"?"#5c636a":"#6c757d",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              transition: "background-color 0.3s"
+            }}
+          >
+            About
+          </button>
+          <button
+            onClick={handleLogin}
+            onMouseEnter={() => setHoveredButton("login")}
+            onMouseLeave={() => setHoveredButton(null)}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: hoveredButton === "login" ? "#0056b3" : "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "0.9rem"
+            }}
+          >
+            Login
+          </button>
+        </div>
       </header>
+
+      {/* About Section */}
+      {showAbout && (
+        <div style={{
+          maxWidth: "750px",
+          margin: "0 auto 30px",
+          backgroundColor: "#f9f9f9",
+          padding: "15px 20px",
+          borderRadius: "8px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          fontSize: "1rem",
+          color: "#444",
+          textAlign: "center"
+        }}>
+          Helpmate is a simple and smart platform designed to bridge the gap between users and local professionals.
+          Whether it's for essential daily services or scheduled assistance, Helpmate lets you discover nearby workers,
+          check their availability in real time, and book appointments with ease — all in one place.
+        </div>
+      )}
 
       {/* ========== Search Section ========== */}
       <section>
@@ -114,10 +155,10 @@ function StartPage() {
                 <li
                   key={index}
                   onClick={() => {
-                    skipSuggestionFetch.current = true; 
+                    skipSuggestionFetch.current = true;
                     setSuggestions([]);
                     setLocation(loc);
-                    inputRef.current.blur(); 
+                    inputRef.current.blur();
                   }}
                 >
                   {loc}
