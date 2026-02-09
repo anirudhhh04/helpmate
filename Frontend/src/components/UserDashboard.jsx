@@ -13,7 +13,7 @@ function UserDashboard() {
   const [showAbout, setShowAbout] = useState(false); // NEW
   const navigate = useNavigate();
   const inputRef = useRef(null);
-
+  
   const fetchSuggestions = async () => {
     try {
       const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`);

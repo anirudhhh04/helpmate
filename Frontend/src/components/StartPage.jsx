@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 function StartPage() {
   const [location, setLocation] = useState("");
   const [services, setServices] = useState([]);
@@ -11,6 +10,8 @@ function StartPage() {
   const inputRef = useRef(null);
   const skipSuggestionFetch = useRef(false);
   const [hoveredButton, setHoveredButton] = useState(null);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
 
 
   const fetchSuggestions = async () => {
@@ -78,6 +79,21 @@ function StartPage() {
 
         {/* Login and About Buttons */}
         <div style={{ position: "absolute", top: 0, right: 0, display: "flex", gap: "10px" }}>
+
+  <button
+    onClick={() => setShowAdminLogin(prev => !prev)}
+    style={{
+      padding: "8px 16px",
+      backgroundColor: "#212529",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontSize: "0.9rem"
+    }}
+  >
+    Admin
+  </button>
           <button
             onClick={toggleAbout}
             onMouseEnter={() => setHoveredButton("about")}
@@ -113,6 +129,53 @@ function StartPage() {
           </button>
         </div>
       </header>
+      {showAdminLogin && (
+  <div style={{
+    position: "absolute",
+    top: "80px",
+    right: "20px",
+    backgroundColor: "white",
+    padding: "15px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    zIndex: 1000
+  }}>
+    <input
+      type="password"
+      placeholder="Enter Admin Password"
+      value={adminPassword}
+      onChange={(e) => setAdminPassword(e.target.value)}
+      style={{
+        padding: "8px",
+        width: "200px",
+        marginBottom: "8px",
+        borderRadius: "5px",
+        border: "1px solid #ccc"
+      }}
+    />
+    <br />
+    <button
+      onClick={() => {
+        if (adminPassword === "12345") {
+          navigate("/admin-verification");
+        } else {
+          alert("Incorrect Password");
+        }
+      }}
+      style={{
+        padding: "6px 15px",
+        backgroundColor: "#007bff",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer"
+      }}
+    >
+      Enter
+    </button>
+  </div>
+)}
+
 
       {/* About Section */}
       {showAbout && (
