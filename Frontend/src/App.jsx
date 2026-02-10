@@ -10,6 +10,8 @@ import WorkersList from "./components/WorkersList.jsx";
 import WorkerSlots from "./components/WorkerSlots.jsx";
 import WorkerBookings from "./components/WorkerBookings.jsx";
 import StartPage from "./components/StartPage.jsx";
+import AdminDashboard from "./components/AdminDashboard";
+
 function App() {
   return (
     <div className="parent-c">
@@ -25,6 +27,8 @@ function App() {
         <Route path="/services/:location/:service" element={<WorkersList />} />
         <Route path="/worker/slots/:wid" element={<WorkerSlots />} />
         <Route path="/worker/bookings" element={<WorkerBookings/>}/>
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
       </Routes>
    </div>
   );
