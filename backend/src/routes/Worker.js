@@ -207,14 +207,62 @@ const runPythonAnalysis = (filePath) => {
 // ---------------------------------------------------------
 // COMBINED AI CHECK (Python + Tesseract)
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// DOMAIN KNOWLEDGE BASE
+// ---------------------------------------------------------
+const SERVICE_KEYWORDS = {
+  doctor: [
+    "medical",
+    "medicine",
+    "surgery",
+    "mbbs",
+    "health",
+    "hospital",
+    "doctor",
+    "clinic",
+    "practitioner",
+  ],
+  engineer: [
+    "engineering",
+    "technology",
+    "b.tech",
+    "science",
+    "technical",
+    "computer",
+    "civil",
+    "mechanical",
+  ],
+  plumber: [
+    "plumbing",
+    "trade",
+    "vocational",
+    "technician",
+    "pipe",
+    "water",
+    "maintenance",
+    "apprentice",
+  ],
+  electrician: [
+    "electrical",
+    "electric",
+    "wiring",
+    "voltage",
+    "technician",
+    "power",
+    "grid",
+    "circuit",
+  ],
+};
+
+// ---------------------------------------------------------
+// COMBINED AI CHECK (Python + Tesseract + Context)
+// ---------------------------------------------------------
 const analyzeDocument = async (filePath, username, service) => {
   try {
-    console.log(`Analyzing: ${filePath}`);
+    console.log(`Analyzing: ${filePath} for service: ${service}`);
 
     // 1. Run Python Forensics (Check for Photoshop)
     const forensics = await runPythonAnalysis(filePath);
-    console.log("🕵️ Forensics:", forensics);
-
     if (forensics.is_tampered) {
       return {
         approved: false,
@@ -222,17 +270,20 @@ const analyzeDocument = async (filePath, username, service) => {
       };
     }
 
-    // 2. Run Tesseract (Check Text Content)
-    // Only run this if the image isn't fake
+    // 2. Run Tesseract (Extract Text)
     const {
       data: { text },
     } = await Tesseract.recognize(filePath, "eng");
     const cleanText = text.toLowerCase();
-    const cleanName = username.toLowerCase().trim();
 
-    // Check for Name Impersonation
+    // ---------------------------------------------------------
+    // 3. CHECK 1: NAME VERIFICATION (Identity)
+    // ---------------------------------------------------------
+    const cleanName = username.toLowerCase().trim();
     const nameParts = cleanName.split(" ");
     let nameMatch = false;
+
+    // We check if at least one significant part of the name exists
     for (let part of nameParts) {
       if (part.length > 3 && cleanText.includes(part)) {
         nameMatch = true;
@@ -247,9 +298,40 @@ const analyzeDocument = async (filePath, username, service) => {
       };
     }
 
-    return { approved: true, reason: "Verified Authentic" };
+    // ---------------------------------------------------------
+    // 4. CHECK 2: SERVICE RELEVANCE (Context)
+    // ---------------------------------------------------------
+    // If the service is not in our list, we skip this check (or fail it, your choice)
+    const expectedKeywords = SERVICE_KEYWORDS[service.toLowerCase()] || [];
+
+    // If we have keywords for this service, check them
+    if (expectedKeywords.length > 0) {
+      let keywordFound = false;
+      let foundWords = [];
+
+      for (const word of expectedKeywords) {
+        if (cleanText.includes(word)) {
+          keywordFound = true;
+          foundWords.push(word);
+        }
+      }
+
+      // If NO keywords matched, the document is likely irrelevant
+      if (!keywordFound) {
+        return {
+          approved: false,
+          reason: `Document irrelevant. User applied for '${service}' but document lacks related keywords.`,
+        };
+      }
+      console.log(
+        `✅ Context Match: Found keywords [${foundWords.join(", ")}]`,
+      );
+    }
+
+    // If we passed all checks
+    return { approved: true, reason: "Verified Authentic & Relevant" };
   } catch (error) {
-    console.error(error);
+    console.error("Analysis Error:", error);
     return { approved: false, reason: "Processing Error" };
   }
 };
