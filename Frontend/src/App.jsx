@@ -1,4 +1,4 @@
-import {  Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SelectingPage from "./components/SelectingPage.jsx";
 import UserLogin from "./components/UserLogin.jsx";
 import WorkerLogin from "./components/WorkerLogin.jsx";
@@ -16,8 +16,8 @@ function App() {
   return (
     <div className="parent-c">
       <Routes>
-        <Route path="/" element={<StartPage/>}/>
-        <Route path="/selecting" element={<SelectingPage/>}/>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/selecting" element={<SelectingPage />} />
         <Route path="/user/login" element={<UserLogin />} />
         <Route path="/worker/login" element={<WorkerLogin />} />
         <Route path="/user/register" element={<RegisterUser />} />
@@ -26,11 +26,10 @@ function App() {
         <Route path="/user/dashboard" element={<UserDashboard />} />
         <Route path="/services/:location/:service" element={<WorkersList />} />
         <Route path="/worker/slots/:wid" element={<WorkerSlots />} />
-        <Route path="/worker/bookings" element={<WorkerBookings/>}/>
+        <Route path="/worker/bookings" element={<WorkerBookings />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-
       </Routes>
-   </div>
+    </div>
   );
 }
 

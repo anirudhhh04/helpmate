@@ -5,7 +5,13 @@ const Slot = require("../models/Slot");
 const Convertslot = require("../controller/Convertslot");
 const Booking = require("../models/Booking");
 const User = require("../models/User");
+const { spawn } = require("child_process");
+const crypto = require("crypto"); // Built-in Node module for Hashing
+const fs = require("fs");
 const Rating = require("../models/Rating");
+const path = require("path");
+const Tesseract = require("tesseract.js");
+const upload = require("../middlewares/multerconfig");
 const router = express.Router();
 
 router.get("/locations", async (req, res) => {
@@ -164,40 +170,219 @@ router.get("/slots/:id/:date", async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 });
-router.post("/register", async (req, res) => {
+
+const runPythonAnalysis = (filePath) => {
+  return new Promise((resolve, reject) => {
+    // Point to the script we created in Step 3
+    const scriptPath = path.join(__dirname, "../scripts/ai_verification.py");
+
+    // Spawn the python process
+    const pythonProcess = spawn("python", [scriptPath, filePath]);
+
+    let dataString = "";
+
+    // Collect data printed by Python
+    pythonProcess.stdout.on("data", (data) => {
+      dataString += data.toString();
+    });
+
+    pythonProcess.stderr.on("data", (data) => {
+      console.error(`Python Error: ${data}`);
+    });
+
+    // When Python finishes
+    pythonProcess.on("close", (code) => {
+      try {
+        const result = JSON.parse(dataString);
+        resolve(result);
+      } catch (e) {
+        console.error("Failed to parse Python response", e);
+        // Fallback if python fails
+        resolve({ is_tampered: false, verdict: "System Error" });
+      }
+    });
+  });
+};
+
+// ---------------------------------------------------------
+// COMBINED AI CHECK (Python + Tesseract)
+// ---------------------------------------------------------
+const analyzeDocument = async (filePath, username, service) => {
   try {
-    const workerexisting = await Worker.findOne({ email: req.body.email });
-    if (workerexisting)
-      return res.json({ message: "worker already exist", success: false });
+    console.log(`Analyzing: ${filePath}`);
+
+    // 1. Run Python Forensics (Check for Photoshop)
+    const forensics = await runPythonAnalysis(filePath);
+    console.log("🕵️ Forensics:", forensics);
+
+    if (forensics.is_tampered) {
+      return {
+        approved: false,
+        reason: `Forgery Detected (Tamper Score: ${forensics.tamper_score})`,
+      };
+    }
+
+    // 2. Run Tesseract (Check Text Content)
+    // Only run this if the image isn't fake
+    const {
+      data: { text },
+    } = await Tesseract.recognize(filePath, "eng");
+    const cleanText = text.toLowerCase();
+    const cleanName = username.toLowerCase().trim();
+
+    // Check for Name Impersonation
+    const nameParts = cleanName.split(" ");
+    let nameMatch = false;
+    for (let part of nameParts) {
+      if (part.length > 3 && cleanText.includes(part)) {
+        nameMatch = true;
+        break;
+      }
+    }
+
+    if (!nameMatch) {
+      return {
+        approved: false,
+        reason: "Name mismatch (Possible Impersonation)",
+      };
+    }
+
+    return { approved: true, reason: "Verified Authentic" };
+  } catch (error) {
+    console.error(error);
+    return { approved: false, reason: "Processing Error" };
+  }
+};
+
+router.post("/register", upload.any(), async (req, res) => {
+  try {
     const { username, email, password, location, phone, service, description } =
       req.body;
-    const worker = await Worker.create({
+
+    // 1. Check if Email Exists
+    const existingWorker = await Worker.findOne({ email });
+    if (existingWorker) {
+      // Cleanup: Delete uploaded files so they don't clutter the server
+      if (req.files) req.files.forEach((f) => fs.unlinkSync(f.path));
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already registered" });
+    }
+
+    let uploadedDocs = [];
+    let fileHashes = [];
+    let aiVerdict = false;
+    let aiReason = "No documents uploaded";
+
+    // 2. Process Files (Security & AI)
+    if (req.files && req.files.length > 0) {
+      uploadedDocs = req.files.map((f) => `uploads/${f.filename}`);
+
+      // --- STEP A: GENERATE HASHES & CHECK DUPLICATES ---
+      for (const file of req.files) {
+        const fileBuffer = fs.readFileSync(file.path);
+        const hashSum = crypto.createHash("sha256");
+        hashSum.update(fileBuffer);
+        const hex = hashSum.digest("hex");
+        fileHashes.push(hex);
+      }
+
+      // Check DB: Does ANY of these hashes exist in any other worker's record?
+      const duplicateDoc = await Worker.findOne({
+        documentHashes: { $in: fileHashes },
+      });
+
+      if (duplicateDoc) {
+        console.log(
+          `🚨 Security Alert: Duplicate document detected! (Used by ${duplicateDoc.email})`,
+        );
+
+        // Immediate Cleanup: Delete the fraudulent files
+        req.files.forEach((f) => fs.unlinkSync(f.path));
+
+        return res.json({
+          success: false,
+          message:
+            "Security Alert: One or more documents are already in use by another registered worker.",
+        });
+      }
+
+      // --- STEP B: RUN AI ANALYSIS LOOP ---
+      let allPassed = true;
+      let reasons = [];
+
+      for (const file of req.files) {
+        const docPath = file.path;
+
+        console.log(`🤖 Analyzing: ${file.originalname}`);
+        const result = await analyzeDocument(docPath, username, service);
+
+        if (!result.approved) {
+          allPassed = false;
+          reasons.push(`${file.originalname}: ${result.reason}`);
+        } else {
+          reasons.push(`${file.originalname}: Verified`);
+        }
+      }
+
+      // Final Verdict Logic
+      aiVerdict = allPassed;
+      aiReason = reasons.join(" | ");
+    }
+
+    // 3. Create Worker
+    const newWorker = await Worker.create({
       username,
       email,
-      password,
+      password, // Hashed by Schema pre-save hook
       location: location.toLowerCase(),
       contactNumber: phone,
       service,
       description,
+
+      documents: uploadedDocs, // Array of file paths
+      documentHashes: fileHashes, // Array of SHA-256 hashes
+
+      aiApproved: aiVerdict,
+      aiVerdictReason: aiReason,
+      verificationStatus: "pending", // Always pending Admin approval
     });
+
     return res
-      .status(200)
-      .json({ message: "worker created successfully", success: true });
+      .status(201)
+      .json({ success: true, message: "Registered", aiStatus: aiReason });
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    console.error("Register Error:", err);
+
+    // Cleanup files on server error
+    if (req.files) {
+      req.files.forEach((f) => {
+        if (fs.existsSync(f.path)) fs.unlinkSync(f.path);
+      });
+    }
+
+    return res.status(500).json({ success: false, message: err.message });
   }
 });
-
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
-    const workerregistered = await Worker.findOne({ email: req.body.email });
-    if (workerregistered == null) {
+    const worker = await Worker.findOne({ email: req.body.email });
+
+    if (worker == null) {
       return res.json({ message: "worker not registered", success: false });
     }
     const token = await Worker.matchpassword(email, password);
     if (!token)
       return res.json({ message: "invalid email or password", success: false });
+
+    if (worker.verificationStatus !== "approved") {
+      return res.json({
+        success: false,
+        message:
+          "Your account is waiting for Admin Approval. Please check back later.",
+      });
+    }
     return res
       .status(200)
       .json({ message: "User logged in", token, success: true });
