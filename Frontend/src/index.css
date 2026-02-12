@@ -118,6 +118,10 @@ header p {
     background-position: 400%;
   }
 }
+.submit-animated:hover {
+  animation: animate 8s linear infinite;
+}
+
 .register-button:hover {
   animation: animate 8s linear infinite;
 }

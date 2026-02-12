@@ -198,7 +198,8 @@ const runPythonAnalysis = (filePath) => {
       } catch (e) {
         console.error("Failed to parse Python response", e);
         // Fallback if python fails
-        resolve({ is_tampered: false, verdict: "System Error" });
+        resolve({ is_tampered: true, tamper_score: 0, verdict: "Verification System Error" });
+
       }
     });
   });
@@ -261,29 +262,44 @@ const analyzeDocument = async (filePath, username, service) => {
   try {
     console.log(`Analyzing: ${filePath} for service: ${service}`);
 
-    // 1. Run Python Forensics (Check for Photoshop)
+    // 1️⃣ Run Python Forensics
     const forensics = await runPythonAnalysis(filePath);
+
     if (forensics.is_tampered) {
       return {
         approved: false,
-        reason: `Forgery Detected (Tamper Score: ${forensics.tamper_score})`,
+        reason: `Document integrity issue detected (Score: ${forensics.tamper_score})`,
       };
     }
 
-    // 2. Run Tesseract (Extract Text)
+    // 2️⃣ Decide which file goes to OCR
+    let imageForOCR = filePath;
+
+    if (forensics.converted_image) {
+      imageForOCR = forensics.converted_image;
+    }
+
+    // 3️⃣ Run OCR on correct image
     const {
       data: { text },
-    } = await Tesseract.recognize(filePath, "eng");
+    } = await Tesseract.recognize(imageForOCR, "eng");
+
     const cleanText = text.toLowerCase();
 
-    // ---------------------------------------------------------
-    // 3. CHECK 1: NAME VERIFICATION (Identity)
-    // ---------------------------------------------------------
+    // 4️⃣ Cleanup converted PDF image AFTER OCR
+    if (forensics.converted_image && filePath.endsWith(".pdf")) {
+      if (fs.existsSync(forensics.converted_image)) {
+        fs.unlinkSync(forensics.converted_image);
+      }
+    }
+
+    // -----------------------------
+    // NAME CHECK
+    // -----------------------------
     const cleanName = username.toLowerCase().trim();
     const nameParts = cleanName.split(" ");
     let nameMatch = false;
 
-    // We check if at least one significant part of the name exists
     for (let part of nameParts) {
       if (part.length > 3 && cleanText.includes(part)) {
         nameMatch = true;
@@ -298,38 +314,31 @@ const analyzeDocument = async (filePath, username, service) => {
       };
     }
 
-    // ---------------------------------------------------------
-    // 4. CHECK 2: SERVICE RELEVANCE (Context)
-    // ---------------------------------------------------------
-    // If the service is not in our list, we skip this check (or fail it, your choice)
+    // -----------------------------
+    // SERVICE KEYWORD CHECK
+    // -----------------------------
     const expectedKeywords = SERVICE_KEYWORDS[service.toLowerCase()] || [];
 
-    // If we have keywords for this service, check them
     if (expectedKeywords.length > 0) {
       let keywordFound = false;
-      let foundWords = [];
 
       for (const word of expectedKeywords) {
         if (cleanText.includes(word)) {
           keywordFound = true;
-          foundWords.push(word);
+          break;
         }
       }
 
-      // If NO keywords matched, the document is likely irrelevant
       if (!keywordFound) {
         return {
           approved: false,
-          reason: `Document irrelevant. User applied for '${service}' but document lacks related keywords.`,
+          reason: `Document irrelevant for service '${service}'`,
         };
       }
-      console.log(
-        `✅ Context Match: Found keywords [${foundWords.join(", ")}]`,
-      );
     }
 
-    // If we passed all checks
     return { approved: true, reason: "Verified Authentic & Relevant" };
+
   } catch (error) {
     console.error("Analysis Error:", error);
     return { approved: false, reason: "Processing Error" };

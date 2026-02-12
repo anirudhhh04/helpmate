@@ -3,59 +3,69 @@ import cv2
 import numpy as np
 import json
 import os
+import uuid
+from pdf2image import convert_from_path
+
+def convert_pdf_to_image(pdf_path):
+    images = convert_from_path(
+        pdf_path,
+        dpi=200,
+        poppler_path=r"C:\poppler\poppler-25.12.0\Library\bin"
+    )
+    temp_image = f"pdf_{uuid.uuid4().hex}.jpg"
+    images[0].save(temp_image, "JPEG")
+    return temp_image
 
 def analyze_image(image_path):
+    temp_pdf_image = None
+
     try:
-        # 1. Check if file exists
+        # 1️⃣ Check file exists
         if not os.path.exists(image_path):
             return {"success": False, "error": "File not found"}
 
-        # 2. Load Original Image
+        # 2️⃣ Convert PDF if needed
+        if image_path.lower().endswith(".pdf"):
+            temp_pdf_image = convert_pdf_to_image(image_path)
+            image_path = temp_pdf_image
+
+        # 3️⃣ Load image
         original = cv2.imread(image_path)
         if original is None:
             return {"success": False, "error": "Could not read image"}
 
-        # 3. ERROR LEVEL ANALYSIS (ELA) Logic
-        # Save a temporary copy at 90% quality
-        temp_filename = "temp_ela.jpg"
+        # 4️⃣ ELA
+        temp_filename = f"temp_ela_{uuid.uuid4().hex}.jpg"
         cv2.imwrite(temp_filename, original, [cv2.IMWRITE_JPEG_QUALITY, 90])
-        
-        # Read the compressed copy
+
         compressed = cv2.imread(temp_filename)
-        
-        # 4. Calculate the difference (The "Digital Noise")
-        # Real docs have uniform noise. Fake docs have spikes in noise where edited.
         diff = cv2.absdiff(original, compressed)
-        
-        # Convert to grayscale to measure intensity
         gray_diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-        
-        # Find the maximum difference value (The "Tamper Score")
-        max_diff = np.max(gray_diff)
-        
-        # Clean up temp file
+
+        max_diff = int(np.max(gray_diff))
+
+        # Remove ELA temp file
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
 
-        # 5. VERDICT LOGIC
-        # Score < 15: Likely Original / Clean Scan
-        # Score > 15: High probability of digital manipulation (Photoshop)
-        is_fake = int(max_diff) > 15
+        is_fake = max_diff > 15
 
         return {
             "success": True,
-            "tamper_score": int(max_diff),
+            "tamper_score": max_diff,
             "is_tampered": is_fake,
-            "verdict": "Likely Fake" if is_fake else "Authentic"
+            "converted_image": temp_pdf_image if temp_pdf_image else None,
+            "verdict": "Integrity issue detected" if is_fake else "No strong tampering evidence"
         }
 
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        return {
+            "success": False,
+            "is_tampered": True,  # safer fallback
+            "error": str(e)
+        }
 
 if __name__ == "__main__":
-    # Get the file path sent from Node.js
     input_path = sys.argv[1]
     result = analyze_image(input_path)
-    
-    # Print JSON so Node.js can read it
     print(json.dumps(result))

@@ -191,7 +191,7 @@ const RegisterWorker = () => {
             </div>
           ))}
 
-          <button style={styles.submitBtn} type="submit">
+          <button style={styles.submitBtn} className="submit-animated" type="submit">
             Register
           </button>
         </form>
@@ -244,7 +244,7 @@ const styles = {
   title: {
     textAlign: "center",
     marginBottom: "20px", // Reduced margin
-    color: "#fff",
+    color: "#080707",
     fontSize: "24px",
     fontWeight: "bold",
     textShadow: "0 2px 4px rgba(0,0,0,0.3)",
@@ -302,24 +302,29 @@ const styles = {
     textShadow: "0 1px 2px rgba(0,0,0,0.2)",
   },
   submitBtn: {
-    width: "100%",
-    padding: "12px",
-    background: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: "bold",
-    marginTop: "10px",
-    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-    transition: "transform 0.2s ease",
-  },
+  width: "220px",
+  height: "50px",
+  alignSelf: "center",           // 🔥 centers inside flex container
+  display: "block",
+  margin: "20px auto 0 auto",    // 🔥 centers horizontally
+  borderRadius: "40px",
+  textTransform: "uppercase",
+  letterSpacing: "2px",
+  fontSize: "16px",
+  fontWeight: "bold",
+  color: "#fff",
+  border: "none",
+  cursor: "pointer",
+  background: "linear-gradient(90deg, #03a9f4, #d21872, #ffeb3b, #03a9f4)",
+  backgroundSize: "400%",
+  transition: "all 0.3s ease-in-out",
+}
+,
   footerText: {
     textAlign: "center",
     marginTop: "15px",
     fontSize: "14px",
-    color: "#eee",
+    color: "#131212",
   },
 };
 
