@@ -12,7 +12,7 @@ function WorkerLogin() {
     try {
       const response = await axios.post(
         "http://localhost:4000/api/worker/login",
-        { email, password }
+        { email, password },
       );
 
       if (response.data.success) {
@@ -21,20 +21,19 @@ function WorkerLogin() {
       } else {
         const message = response.data.message;
 
-        if (message === "worker not registered") {
-          navigate("/worker/register");
-        } 
-        else if (message === "invalid email or password") {
-          alert("Invalid email or password");
-        } 
-        else if (message === "verification pending") {
-          alert("Your account is under verification. Please wait for admin approval.");
-        } 
-        else if (message === "verification rejected") {
-          alert("Your registration was rejected by admin.");
-        } 
+        // Specific check for "Worker not registered" to redirect
+        // Note: Make sure backend sends exactly "Worker not registered"
+        if (message && message.toLowerCase().includes("not registered")) {
+          if (
+            window.confirm("Account not found. Would you like to register?")
+          ) {
+            navigate("/worker/register");
+          }
+        }
+        // For all other errors (Invalid pass, Pending Approval, Rejected),
+        // just show the message the backend sent.
         else {
-          alert("Login failed.");
+          alert(message);
         }
       }
     } catch (err) {
@@ -67,10 +66,7 @@ function WorkerLogin() {
           />
         </div>
 
-        <button
-          className="register-button"
-          onClick={handleLogin}
-        >
+        <button className="register-button" onClick={handleLogin}>
           Login
         </button>
       </div>
