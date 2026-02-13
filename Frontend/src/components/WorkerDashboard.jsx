@@ -36,13 +36,16 @@ function WorkerDashboard() {
     const fetchWorkerData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/worker/get/${workerId}`,
+          `${import.meta.env.VITE_API_URL}
+/api/worker/get/${workerId}`,
         );
         const workerData = response.data.worker;
         if (workerData.imageurl) {
-          setImageUrl("http://localhost:4000/" + workerData.imageurl);
+          setImageUrl(`${import.meta.env.VITE_API_URL}
+/` + workerData.imageurl);
         } else {
-          setImageUrl("http://localhost:4000/images/profilelogo.png");
+          setImageUrl(`${import.meta.env.VITE_API_URL}
+/images/profilelogo.png`);
         }
       } catch (error) {
         console.error("Error fetching worker data");
@@ -106,7 +109,8 @@ function WorkerDashboard() {
     try {
       const date = selectedDate.toLocaleDateString("en-CA");
       const response = await axios.post(
-        "http://localhost:4000/api/worker/slots",
+        `${import.meta.env.VITE_API_URL}
+/api/worker/slots`,
         { workerId, date, slots },
       );
       alert(response.data.message);
@@ -131,7 +135,8 @@ function WorkerDashboard() {
     f.append("image", image);
     try {
       const response = await axios.post(
-        `http://localhost:4000/upload/${workerId}`,
+        `${import.meta.env.VITE_API_URL}
+/upload/${workerId}`,
         f,
       );
       setImageUrl(response.data.imageurl);

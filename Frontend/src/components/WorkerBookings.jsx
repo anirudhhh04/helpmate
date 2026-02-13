@@ -16,7 +16,8 @@ function WorkerBookings() {
       const decoded = jwt_decode(token);
       console.log("🚀 Frontend Requesting Bookings for ID:", decoded._id);
       const response = await axios.get(
-        `http://localhost:4000/api/worker/bookings/${decoded._id}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/bookings/${decoded._id}`,
       );
 
       if (response.data.success) {
@@ -38,7 +39,8 @@ function WorkerBookings() {
     try {
       // 1. Single API call handles BOTH Booking Status & Slot Availability
       const response = await axios.put(
-        `http://localhost:4000/api/worker/bookings/confirm/${bookingId}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/bookings/confirm/${bookingId}`,
         { status: 1, date },
       );
 
@@ -60,7 +62,8 @@ function WorkerBookings() {
     if (!window.confirm("Reject this booking?")) return;
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/worker/bookings/reject/${bookingId}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/bookings/reject/${bookingId}`,
         { deleted: true },
       );
       if (response.data.success) {
@@ -77,7 +80,8 @@ function WorkerBookings() {
   const handleRateUser = async (bookingId, userId, ratingValue) => {
     try {
       const response = await axios.put(
-        "http://localhost:4000/api/worker/rate-user",
+        `${import.meta.env.VITE_API_URL}
+/api/worker/rate-user`,
         {
           bookingId,
           userId,

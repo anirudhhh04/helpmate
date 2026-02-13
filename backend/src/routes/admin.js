@@ -21,7 +21,8 @@ router.get("/all-workers", async (req, res) => {
 });
 
 // 2. VERIFY WORKER (Approve/Reject)
-// Endpoint: http://localhost:4000/api/admin/verify-worker/:id
+// Endpoint: ${import.meta.env.VITE_API_URL}
+/api/admin/verify-worker/:id
 router.put("/verify-worker/:id", async (req, res) => {
   const { id } = req.params;
   const { action } = req.body; // 'approved' or 'rejected' from frontend

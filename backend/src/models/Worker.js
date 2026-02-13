@@ -55,12 +55,12 @@ const workerSchema = new mongoose.Schema(
     },
     aiApproved: {
       type: Boolean,
-      default: false,
+      default: true,
     },
 
     aiVerdictReason: {
       type: String,
-      default: "Pending Analysis",
+      default: "currently no ai python",
     },
 
     verificationStatus: {

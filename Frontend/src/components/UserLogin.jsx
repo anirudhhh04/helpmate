@@ -10,7 +10,8 @@ function UserLogin() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/api/user/login", { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}
+/api/user/login`, { email, password });
       if(response.data.success){
         localStorage.setItem("userToken", response.data.token);
         navigate("/user/dashboard");

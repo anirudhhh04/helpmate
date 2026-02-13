@@ -15,7 +15,8 @@ function AdminDashboard() {
   const fetchWorkers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/admin/all-workers",
+        `${import.meta.env.VITE_API_URL}
+/api/admin/all-workers`,
       );
       setWorkers(response.data.workers || []);
       setLoading(false);
@@ -30,7 +31,8 @@ function AdminDashboard() {
       return;
 
     try {
-      await axios.put(`http://localhost:4000/api/admin/verify-worker/${id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL}
+/api/admin/verify-worker/${id}`, {
         action,
       });
       // Optimistic UI update (update list without reloading)
@@ -248,7 +250,8 @@ function AdminDashboard() {
                   worker.documents.map((docPath, index) => (
                     <a
                       key={index}
-                      href={`http://localhost:4000/${docPath}`}
+                      href={`${import.meta.env.VITE_API_URL}
+/${docPath}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -272,7 +275,8 @@ function AdminDashboard() {
                         </div>
                       ) : (
                         <img
-                          src={`http://localhost:4000/${docPath}`}
+                          src={`${import.meta.env.VITE_API_URL}
+/${docPath}`}
                           alt="Doc"
                           style={{
                             width: "70px",

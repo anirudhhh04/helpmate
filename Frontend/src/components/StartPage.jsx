@@ -16,7 +16,8 @@ function StartPage() {
   const fetchSuggestions = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/worker/locations?q=${location}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/locations?q=${location}`,
       );
       setSuggestions(response.data);
     } catch (error) {
@@ -44,7 +45,8 @@ function StartPage() {
     }
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/worker/services/${location}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/services/${location}`,
       );
       setServices(response.data.services);
     } catch (error) {

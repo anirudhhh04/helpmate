@@ -12,7 +12,8 @@ function WorkersList() {
     const fetchWorkers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/worker/${location}/${service}`,
+          `${import.meta.env.VITE_API_URL}
+/api/worker/${location}/${service}`,
         );
         if (Array.isArray(response.data)) {
           setWorkers(response.data.filter((worker) => worker));
@@ -55,8 +56,10 @@ function WorkersList() {
                   <img
                     src={
                       worker.imageurl
-                        ? "http://localhost:4000/" + worker.imageurl
-                        : "http://localhost:4000/images/profilelogo.png"
+                        ? `${import.meta.env.VITE_API_URL}
+/` + worker.imageurl
+                        : `${import.meta.env.VITE_API_URL}
+/images/profilelogo.png`
                     }
                     alt={worker.username}
                   />

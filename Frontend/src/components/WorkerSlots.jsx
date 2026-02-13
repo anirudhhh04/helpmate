@@ -84,7 +84,8 @@ function WorkerSlots() {
   const fetchRatings = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/rating/worker/${wid}`,
+        `${import.meta.env.VITE_API_URL}
+/api/rating/worker/${wid}`,
       );
       if (res.data.success) {
         setAllRatings(res.data.ratings);
@@ -114,7 +115,8 @@ function WorkerSlots() {
       // 2. Fetch Worker Profile (if not already loaded)
       if (!worker) {
         const wRes = await axios.get(
-          `http://localhost:4000/api/worker/get/${wid}`,
+          `${import.meta.env.VITE_API_URL}
+/api/worker/get/${wid}`,
         );
         if (wRes.data.success) setWorker(wRes.data.worker);
       }
@@ -123,7 +125,8 @@ function WorkerSlots() {
 
       // 3. Fetch Slots for Date
       const sRes = await axios.get(
-        `http://localhost:4000/api/worker/slots/${wid}/${dateStr}`,
+        `${import.meta.env.VITE_API_URL}
+/api/worker/slots/${wid}/${dateStr}`,
       );
 
       // Handle Success or Empty slots
@@ -134,7 +137,8 @@ function WorkerSlots() {
       // 4. Fetch User Bookings (ONLY if logged in)
       if (currentUserId) {
         const bRes = await axios.get(
-          `http://localhost:4000/api/user/bookings/${currentUserId}/${dateStr}`,
+          `${import.meta.env.VITE_API_URL}
+/api/user/bookings/${currentUserId}/${dateStr}`,
         );
 
         if (bRes.data.success) {
@@ -185,7 +189,8 @@ function WorkerSlots() {
     try {
       const dateStr = getFormattedDate(selectedDate);
 
-      const response = await axios.post("http://localhost:4000/api/user/book", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}
+/api/user/book`, {
         wid,
         startHour: selectedSlot.startHour,
         endHour: selectedSlot.endHour,
@@ -238,7 +243,8 @@ function WorkerSlots() {
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/user/bookings/cancel/${userId.current}/${dateStr}/${startHour}`,
+        `${import.meta.env.VITE_API_URL}
+/api/user/bookings/cancel/${userId.current}/${dateStr}/${startHour}`,
       );
 
       if (response.data.success) {
@@ -258,7 +264,8 @@ function WorkerSlots() {
   const submitRating = async () => {
     if (userRating === 0) return toast.error("Please select a star rating.");
     try {
-      const res = await axios.post("http://localhost:4000/api/rating/add", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}
+/api/rating/add`, {
         userId: userId.current,
         workerId: wid,
         rating: userRating,
@@ -311,8 +318,10 @@ function WorkerSlots() {
               <img
                 src={
                   worker.imageurl
-                    ? `http://localhost:4000/${worker.imageurl}`
-                    : "http://localhost:4000/images/profilelogo.png"
+                    ? `${import.meta.env.VITE_API_URL}
+/${worker.imageurl}`
+                    : `${import.meta.env.VITE_API_URL}
+/images/profilelogo.png`
                 }
                 alt="Profile"
                 style={styles.avatar}

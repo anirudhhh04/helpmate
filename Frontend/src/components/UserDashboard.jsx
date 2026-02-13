@@ -16,7 +16,8 @@ function UserDashboard() {
   
   const fetchSuggestions = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/worker/locations?q=${location}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}
+/api/worker/locations?q=${location}`);
       setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -43,7 +44,8 @@ function UserDashboard() {
     const fetchUser = async () => {
       if (!userId) return;
       try {
-        const response = await axios.get(`http://localhost:4000/api/user/profile/${userId}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}
+/api/user/profile/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -58,7 +60,8 @@ function UserDashboard() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:4000/api/worker/services/${location}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}
+/api/worker/services/${location}`);
       setServices(response.data.services);
     } catch (error) {
       alert("Error fetching services");
