@@ -200,11 +200,18 @@ const RegisterWorker = () => {
         <p style={styles.footerText}>
           Already Registered?{" "}
           <Link
-            to="/worker/login"
-            style={{ color: "#fff", fontWeight: "bold" }}
-          >
-            Login
-          </Link>
+  to="/worker/login"
+  style={{
+    color: "#2563eb",
+    fontWeight: "600",
+    textDecoration: "none",
+  }}
+  onMouseEnter={(e) => (e.target.style.textDecoration = "underline")}
+  onMouseLeave={(e) => (e.target.style.textDecoration = "none")}
+>
+  Login
+</Link>
+
         </p>
       </div>
     </div>
@@ -225,108 +232,114 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
+    minHeight: "100vh",
     width: "100%",
-    // Background handled by .p-s class in CSS
+    padding: "40px 20px",
+    background: "#f3f4f6",
   },
+
   glassCard: {
-    background: "rgba(255, 255, 255, 0.2)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-    border: "1px solid rgba(255, 255, 255, 0.18)",
-    borderRadius: "16px",
-    padding: "30px", // Reduced padding
+    background: "#ffffff",
+    borderRadius: "14px",
+    padding: "35px",
     width: "100%",
-    maxWidth: "500px", // Increased width slightly to fit 2 columns
-    color: "#fff",
+    maxWidth: "720px",   // Wider for 2 columns
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
     boxSizing: "border-box",
+    overflow:"hidden",
   },
+
   title: {
     textAlign: "center",
-    marginBottom: "20px", // Reduced margin
-    color: "#080707",
+    marginBottom: "30px",
+    color: "#111827",
     fontSize: "24px",
-    fontWeight: "bold",
-    textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+    fontWeight: "600",
   },
-  // New Row Style
+
   row: {
     display: "flex",
-    gap: "15px",
-    marginBottom: "0px", // Spacing handled by inputWrapper
+    gap: "18px",
+    marginBottom: "5px",
+    flexWrap: "wrap", // 🔥 allows mobile stacking
+    width:"100%",
   },
+
   inputWrapper: {
     position: "relative",
-    marginBottom: "15px",
-    width: "100%",
+    marginBottom: "18px",
+    flex: "1 1 300px",
+    minWidth: "0", // 🔥 ensures clean wrapping on smaller screens
   },
+
   iconWrapper: {
     position: "absolute",
-    left: "12px",
+    left: "14px",
     top: "50%",
     transform: "translateY(-50%)",
-    color: "#555",
-    zIndex: 1,
+    color: "#6b7280",
+    fontSize: "16px",
     pointerEvents: "none",
   },
+
   inputField: {
     width: "100%",
-    padding: "10px 10px 10px 35px", // Compact padding
-    borderRadius: "8px",
-    border: "none",
+    padding: "12px 14px 12px 42px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
     fontSize: "14px",
     outline: "none",
-    boxSizing: "border-box",
-    background: "rgba(255, 255, 255, 0.9)",
-    color: "#333",
-    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
+    background: "#fff",
+    transition: "border 0.2s ease",
   },
+
   selectField: {
     appearance: "none",
     cursor: "pointer",
   },
+
   arrowIcon: {
     position: "absolute",
-    right: "10px",
+    right: "14px",
     top: "50%",
     transform: "translateY(-50%)",
-    color: "#555",
+    color: "#6b7280",
     pointerEvents: "none",
   },
+
   fileLabel: {
-    fontSize: "12px",
-    fontWeight: "600",
-    color: "#fff",
-    marginBottom: "4px",
+    fontSize: "13px",
+    fontWeight: "500",
+    color: "#374151",
+    marginBottom: "6px",
     display: "block",
-    textShadow: "0 1px 2px rgba(0,0,0,0.2)",
   },
+
   submitBtn: {
-  width: "220px",
-  height: "50px",
-  alignSelf: "center",           // 🔥 centers inside flex container
-  display: "block",
-  margin: "20px auto 0 auto",    // 🔥 centers horizontally
-  borderRadius: "40px",
-  textTransform: "uppercase",
-  letterSpacing: "2px",
-  fontSize: "16px",
-  fontWeight: "bold",
-  color: "#fff",
-  border: "none",
-  cursor: "pointer",
-  background: "linear-gradient(90deg, #03a9f4, #d21872, #ffeb3b, #03a9f4)",
-  backgroundSize: "400%",
-  transition: "all 0.3s ease-in-out",
-}
-,
+    width: "220px",
+    height: "50px",
+    display: "block",
+    margin: "25px auto 0 auto",
+    borderRadius: "40px",
+    textTransform: "uppercase",
+    letterSpacing: "2px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    background: "linear-gradient(90deg, #03a9f4, #d21872, #ffeb3b, #03a9f4)",
+    backgroundSize: "400%",
+    transition: "all 0.3s ease-in-out",
+  },
+
   footerText: {
     textAlign: "center",
-    marginTop: "15px",
+    marginTop: "20px",
     fontSize: "14px",
-    color: "#131212",
+    color: "#374151",
   },
 };
+
 
 export default RegisterWorker;

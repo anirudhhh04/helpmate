@@ -73,105 +73,37 @@ function StartPage() {
   return (
     <div className="dashboard-container">
       {/* ========== Header ========== */}
-      <header
-        style={{
-          position: "relative",
-          textAlign: "center",
-          marginTop: "20px",
-          marginBottom: "30px",
-        }}
-      >
-        <h1
-          className="main-title"
-          style={{ fontSize: "2.5rem", color: "#333", margin: 0 }}
-        >
-          <span style={{ color: "#007bff" }}>HELP</span>
-          <span style={{ color: "#ffc107" }}>MATE</span>
-        </h1>
-        <p
-          style={{
-            fontSize: "1.2rem",
-            color: "#777",
-            marginTop: "0.3rem",
-            fontStyle: "italic",
-          }}
-        >
-          A Customer-Worker Interaction System
-        </p>
+      <nav className="top-navbar">
+  <div className="nav-left">
+    <button
+      className="nav-link"
+      onClick={() => setShowAdminLogin((prev) => !prev)}
+    >
+      Admin
+    </button>
+  </div>
 
-        {/* Login and About Buttons */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            display: "flex",
-            gap: "10px",
-          }}
-        >
-          <button
-            onClick={() => setShowAdminLogin((prev) => !prev)}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#212529",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-            }}
-          >
-            Admin
-          </button>
-          <button
-            onClick={toggleAbout}
-            onMouseEnter={() => setHoveredButton("about")}
-            onMouseLeave={() => setHoveredButton(null)}
-            style={{
-              padding: "8px 16px",
-              backgroundColor:
-                hoveredButton === "about" ? "#5c636a" : "#6c757d",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-              transition: "background-color 0.3s",
-            }}
-          >
-            About
-          </button>
-          <button
-            onClick={handleLogin}
-            onMouseEnter={() => setHoveredButton("login")}
-            onMouseLeave={() => setHoveredButton(null)}
-            style={{
-              padding: "8px 16px",
-              backgroundColor:
-                hoveredButton === "login" ? "#0056b3" : "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-            }}
-          >
-            Login
-          </button>
-        </div>
-      </header>
+  <div className="logo-section">
+    <h1 className="main-logo">
+      <span className="logo-blue">HELP</span>
+      <span className="logo-yellow">MATE</span>
+    </h1>
+  </div>
+
+  <div className="nav-right">
+    <button className="nav-link" onClick={toggleAbout}>
+      About
+    </button>
+
+    <button className="profile-btn" onClick={handleLogin}>
+      👤
+    </button>
+  </div>
+</nav>
+
       {showAdminLogin && (
         <div
-          style={{
-            position: "absolute",
-            top: "80px",
-            right: "20px",
-            backgroundColor: "white",
-            padding: "15px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            zIndex: 1000,
-          }}
+          className="admin-popup"
         >
           <input
             type="password"
@@ -327,7 +259,27 @@ function StartPage() {
           </p>
         )}
       </section>
+      {/* ===== FOOTER ===== */}
+    <footer className="main-footer">
+      <div className="footer-content">
+        <div>
+          <h3>Helpmate</h3>
+          <p>Connecting local professionals with people who need them.</p>
+        </div>
+
+        <div className="footer-contact">
+          <p><strong>Email:</strong> support@helpmate.com</p>
+          <p><strong>Phone:</strong> +91 98765 43210</p>
+          <p><strong>Location:</strong> Thrissur, Kerala</p>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        © {new Date().getFullYear()} Helpmate. All rights reserved.
+      </div>
+    </footer>
     </div>
+
   );
 }
 

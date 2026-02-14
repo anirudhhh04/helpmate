@@ -174,10 +174,10 @@ function UserDashboard() {
       </div>
 
       <div className="quick-services">
-        <button onClick={() => handleQuickService("Plumber")}>🚰 Plumber</button>
-        <button onClick={() => handleQuickService("Electrician")}>💡 Electrician</button>
-        <button onClick={() => handleQuickService("Doctor")}>🩺 Doctor</button>
-        <button onClick={() => handleQuickService("Engineer")}>🏗️ Engineer</button>
+        <button className="service-icon" onClick={() => handleQuickService("Plumber")}>🚰 Plumber</button>
+        <button className="service-icon" onClick={() => handleQuickService("Electrician")}>💡 Electrician</button>
+        <button className="service-icon" onClick={() => handleQuickService("Doctor")}>🩺 Doctor</button>
+        <button className="service-icon" onClick={() => handleQuickService("Engineer")}>🏗️ Engineer</button>
       </div>
 
       {services.length > 0 ? (
