@@ -25,9 +25,9 @@ mongoose
 // ✅ CORS (for frontend)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL,
     "http://localhost:5173",       // Vite default
-    "http://localhost:5174",       // If port auto-changes
+    "http://localhost:5174" ],     // If port auto-changes
     credentials: true,
   })
 );
