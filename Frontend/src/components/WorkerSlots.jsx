@@ -12,8 +12,8 @@ import { IoArrowBack, IoRefresh } from "react-icons/io5";
 function WorkerSlots() {
   const { wid } = useParams();
   const navigate = useNavigate();
-
   // --- Data States ---
+  const [isHover, setIsHover] = useState(false);
   const [worker, setWorker] = useState(null);
   const [slots, setSlots] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -290,17 +290,29 @@ function WorkerSlots() {
       setLoading(false);
     });
   };
-
+  const callButton= {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    padding: "15px",
+    background: isHover ? "#1e4d29" : "#28a745",
+    color: "#fff",
+    textDecoration: "none",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    boxSizing:"border-box",
+  };
   if (loading && !worker)
     return <div style={styles.loadingContainer}>Loading Worker Profile...</div>;
   if (!worker)
     return <div style={styles.loadingContainer}>Worker not found.</div>;
 
   return (
-    <div style={styles.container}>
+    <div className="worker-slots-container">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div style={styles.header}>
+      <div className="worker-header">
         <button
           onClick={() => navigate("/user/dashboard")}
           style={styles.backButton}
@@ -310,11 +322,11 @@ function WorkerSlots() {
         <h2 style={{ margin: 0 }}>Book a Service</h2>
       </div>
 
-      <div style={styles.contentGrid}>
+      <div className="worker-content-grid">
         {/* --- Left Column: Profile --- */}
-        <div style={styles.leftColumn}>
-          <div style={styles.card}>
-            <div style={styles.profileHeader}>
+        <div className="worker-left-column">
+          <div className="worker-ccard">
+            <div className="worker-profile-header">
               <img
                 src={
                   worker.imageurl
@@ -342,13 +354,14 @@ function WorkerSlots() {
             </div>
             <p style={styles.description}>{worker.description}</p>
             {worker.contactNumber && (
-              <a href={`tel:${worker.contactNumber}`} style={styles.callButton}>
+              <a href={`tel:${worker.contactNumber}`} style={callButton} onMouseEnter={() => setIsHover(true)}
+              onMouseLeave={() => setIsHover(false)}>
                 <FaPhoneAlt style={{ marginRight: 8 }} /> Call Now
               </a>
             )}
           </div>
 
-          <div style={styles.card}>
+          <div className="worker-ccard">
             <h3 style={styles.cardTitle}>Select Date</h3>
             <DatePicker
               selected={selectedDate}
@@ -364,7 +377,7 @@ function WorkerSlots() {
         </div>
 
         {/* --- Right Column: Slots --- */}
-        <div style={styles.rightColumn}>
+        <div className="worker-right-column">
           {/* Legend */}
           <div style={styles.legend}>
             <span style={styles.legendItem}>
@@ -392,7 +405,7 @@ function WorkerSlots() {
           </div>
 
           {/* Slots Grid */}
-          <div style={styles.card}>
+          <div className="worker-ccard">
             <div
               style={{
                 display: "flex",
@@ -418,7 +431,7 @@ function WorkerSlots() {
                 No slots available for this date.
               </p>
             ) : (
-              <div style={styles.slotGrid}>
+              <div className="worker-slot-grid">
                 {slots.map((slot, index) => {
                   // --- CRITICAL LOGIC FIX ---
                   // 1. Find if I have a booking (Use loose equality '==' to match "10" and 10)
@@ -502,7 +515,7 @@ function WorkerSlots() {
           </div>
 
           {/* Action Panel */}
-          <div style={styles.actionPanel}>
+          <div className="worker-action-panel">
             {!selectedSlot ? (
               <p style={{ color: "#666", textAlign: "center" }}>
                 👈 Select a slot above to proceed
@@ -558,7 +571,7 @@ function WorkerSlots() {
           </div>
 
           {/* Reviews */}
-          <div style={styles.card}>
+          <div className="worker-ccard">
             <h3 style={styles.cardTitle}>Rate & Review</h3>
             <div
               style={{
@@ -611,14 +624,14 @@ function WorkerSlots() {
 
 // --- STYLES ---
 const styles = {
-  container: {
+  /*container: {
     maxWidth: "1000px",
     margin: "0 auto",
     padding: "20px",
     fontFamily: "Segoe UI, sans-serif",
     background: "#f8f9fa",
     minHeight: "100vh",
-  },
+  },*/
   loadingContainer: {
     display: "flex",
     justifyContent: "center",
@@ -627,7 +640,7 @@ const styles = {
     fontSize: "1.2rem",
     color: "#666",
   },
-  header: {
+  /*header: {
     display: "flex",
     alignItems: "center",
     gap: "20px",
@@ -636,7 +649,7 @@ const styles = {
     padding: "15px",
     borderRadius: "12px",
     boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-  },
+  },*/
   backButton: {
     display: "flex",
     alignItems: "center",
@@ -648,15 +661,15 @@ const styles = {
     fontSize: "1rem",
     fontWeight: 600,
   },
-  contentGrid: { display: "grid", gridTemplateColumns: "1fr 2fr", gap: "20px" },
-  leftColumn: { display: "flex", flexDirection: "column", gap: "20px" },
-  rightColumn: { display: "flex", flexDirection: "column", gap: "20px" },
-  card: {
+  //contentGrid: { display: "grid", gridTemplateColumns: "1fr 2fr", gap: "20px" },
+  //leftColumn: { display: "flex", flexDirection: "column", gap: "20px" },
+  //rightColumn: { display: "flex", flexDirection: "column", gap: "20px" },
+  /*card: {
     background: "#fff",
     padding: "20px",
     borderRadius: "12px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-  },
+  },*/
   cardTitle: {
     marginTop: 0,
     marginBottom: "15px",
@@ -664,12 +677,12 @@ const styles = {
     borderBottom: "1px solid #eee",
     paddingBottom: "10px",
   },
-  profileHeader: {
+  /*profileHeader: {
     display: "flex",
     alignItems: "center",
     gap: "15px",
     marginBottom: "15px",
-  },
+  },*/
   avatar: {
     width: "80px",
     height: "80px",
@@ -701,18 +714,7 @@ const styles = {
     lineHeight: "1.5",
     marginBottom: "15px",
   },
-  callButton: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    padding: "10px",
-    background: "#28a745",
-    color: "#fff",
-    textDecoration: "none",
-    borderRadius: "8px",
-    fontWeight: "bold",
-  },
+  
   legend: {
     display: "flex",
     gap: "15px",
@@ -735,11 +737,11 @@ const styles = {
     fontSize: "0.8rem",
     color: "#333",
   },
-  slotGrid: {
+  /*slotGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
     gap: "10px",
-  },
+  },*/
   slotBtn: {
     padding: "12px",
     borderRadius: "8px",
@@ -779,13 +781,13 @@ const styles = {
     fontWeight: "bold",
     boxShadow: "0 2px 5px rgba(40, 167, 69, 0.4)",
   },
-  actionPanel: {
+  /*actionPanel: {
     background: "#fff",
     padding: "20px",
     borderRadius: "12px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     border: "1px solid #e0e0e0",
-  },
+  },*/
   textArea: {
     width: "100%",
     padding: "10px",
@@ -843,10 +845,5 @@ const styles = {
   },
 };
 
-const mobileStyles = `
-@media (max-width: 768px) {
-  .contentGrid { grid-template-columns: 1fr !important; }
-}
-`;
 
 export default WorkerSlots;
