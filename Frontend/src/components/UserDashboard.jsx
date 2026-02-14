@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
-
+import { FaUserCircle } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 function UserDashboard() {
   const [location, setLocation] = useState("");
   const [services, setServices] = useState([]);
@@ -13,6 +14,8 @@ function UserDashboard() {
   const [showAbout, setShowAbout] = useState(false); // NEW
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   
   const fetchSuggestions = async () => {
     try {
@@ -85,27 +88,40 @@ function UserDashboard() {
   <div className="dashboard-container">
 
     {/* ===== NAVBAR ===== */}
-    <nav className="top-navbar">
-      <div className="logo-section">
-        <h1 className="main-logo">
-          <span className="logo-blue">HELP</span>
-          <span className="logo-yellow">MATE</span>
-        </h1>
-      </div>
+   <nav className="top-navbar">
 
-      <div className="nav-right">
-        <button className="nav-link" onClick={toggleAbout}>
-          About
-        </button>
+  {/* LEFT EMPTY */}
+  <div className="nav-left"></div>
 
-        <button 
-          className="profile-btn" 
-          onClick={() => setShowSidebar(!showSidebar)}
-        >
-          👤
-        </button>
-      </div>
-    </nav>
+  {/* CENTER LOGO */}
+  <div className="nav-center">
+    <h1 className="main-logo">
+      <span className="logo-blue">HELP</span>
+      <span className="logo-yellow">MATE</span>
+    </h1>
+  </div>
+
+  {/* RIGHT MENU */}
+  <div className="nav-right">
+    <button 
+      className="menu-btn"
+      onClick={() => setMenuOpen(!menuOpen)}
+    >
+      ☰
+    </button>
+  </div>
+
+</nav>
+
+{menuOpen && (
+  <div className="dropdown-menu">
+    <p className="menu-username">{user?.username}</p>
+    <button onClick={toggleAbout}>About</button>
+    <button onClick={handleLogout}>Logout</button>
+  </div>
+)}
+
+
 
 
     {/* ===== SIDEBAR ===== */}
@@ -153,7 +169,7 @@ function UserDashboard() {
           onBlur={() => setTimeout(() => setSuggestions([]), 300)}
         />
         <button onClick={fetchServices} className="search-button">
-          🔍 Search
+          <FaSearch/>
         </button>
 
         {suggestions.length > 0 && (

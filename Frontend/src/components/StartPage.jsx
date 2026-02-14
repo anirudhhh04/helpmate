@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 function StartPage() {
   const [location, setLocation] = useState("");
   const [services, setServices] = useState([]);
@@ -9,7 +11,7 @@ function StartPage() {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const skipSuggestionFetch = useRef(false);
-  const [hoveredButton, setHoveredButton] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
 
@@ -69,12 +71,11 @@ function StartPage() {
   const toggleAbout = () => {
     setShowAbout((prev) => !prev);
   };
-
   return (
     <div className="dashboard-container">
       {/* ========== Header ========== */}
       <nav className="top-navbar">
-  <div className="nav-left">
+        <div className="nav-left">
     <button
       className="nav-link"
       onClick={() => setShowAdminLogin((prev) => !prev)}
@@ -83,23 +84,28 @@ function StartPage() {
     </button>
   </div>
 
-  <div className="logo-section">
+  <div className="nav-center">
     <h1 className="main-logo">
       <span className="logo-blue">HELP</span>
       <span className="logo-yellow">MATE</span>
     </h1>
   </div>
-
   <div className="nav-right">
-    <button className="nav-link" onClick={toggleAbout}>
-      About
-    </button>
-
-    <button className="profile-btn" onClick={handleLogin}>
-      👤
+    <button 
+      className="menu-btn"
+      onClick={() => setMenuOpen(!menuOpen)}
+    >
+      ☰
     </button>
   </div>
+
 </nav>
+{menuOpen && (
+  <div className="dropdown-menu">
+    <button onClick={handleLogin}>Login</button>
+    <button onClick={toggleAbout}>About</button>
+  </div>
+)}
 
       {showAdminLogin && (
         <div
@@ -178,7 +184,7 @@ function StartPage() {
             onBlur={() => setTimeout(() => setSuggestions([]), 300)}
           />
           <button onClick={fetchServices} className="search-button">
-            🔍 Search
+            <FaSearch/>
           </button>
 
           {/* Suggestions dropdown */}
